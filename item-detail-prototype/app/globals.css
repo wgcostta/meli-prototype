@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ml-blue: #3483fa;
+  --ml-green: #00a650;
+  --ml-gray: #eee;
+  --ml-white: #fff;
+  --ml-text: #333;
+}
+
+body {
+  @apply bg-[--ml-gray] text-[--ml-text] font-sans;
+}
