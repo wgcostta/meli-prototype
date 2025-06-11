@@ -3,13 +3,19 @@
 @tailwind utilities;
 
 :root {
-  --ml-blue: #3483fa;
-  --ml-green: #00a650;
-  --ml-gray: #eee;
-  --ml-white: #fff;
-  --ml-text: #333;
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
 }
 
 body {
-  @apply bg-[--ml-gray] text-[--ml-text] font-sans;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
 }
