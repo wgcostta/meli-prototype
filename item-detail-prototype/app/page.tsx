@@ -62,10 +62,10 @@ export default function ProductPage() {
     isOfficialStore: true,
     shipping: 'Frete grátis',
     images: [
-      'https://http2.mlstatic.com/D_NQ_NP_2X_678234-MLU74551621196_022024-F.webp',
-      'https://http2.mlstatic.com/D_NQ_NP_2X_985656-MLU74551621200_022024-F.webp',
-      'https://http2.mlstatic.com/D_NQ_NP_2X_951442-MLU74551621202_022024-F.webp',
-      'https://http2.mlstatic.com/D_NQ_NP_2X_727727-MLU74551621204_022024-F.webp'
+      'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1580910051074-3eb694886505?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?w=400&h=400&fit=crop'
     ]
   };
 
@@ -80,9 +80,28 @@ export default function ProductPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header simplificado */}
-      <header className="bg-yellow-400 p-4">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-2xl font-bold text-gray-800">MercadoLibre</h1>
+      <header className="bg-[#fff159] px-4 py-3 shadow-sm">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <h1 className="text-2xl font-bold text-gray-800 font-sans">MercadoLibre</h1>
+            <div className="hidden md:flex">
+              <input
+                type="text"
+                placeholder="Buscar produtos, marcas e muito mais..."
+                className="w-96 px-4 py-2 rounded-l-sm border-0 focus:outline-none"
+              />
+              <button className="bg-white px-4 py-2 rounded-r-sm border-0">
+                <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div className="flex items-center gap-4 text-sm">
+            <span className="text-gray-700">Criar conta</span>
+            <span className="text-gray-700">Entrar</span>
+            <span className="text-gray-700">Meus pedidos</span>
+          </div>
         </div>
       </header>
 
