@@ -1,13 +1,18 @@
 import '@testing-library/jest-dom'
+import React from 'react'
 
 // Mock Next.js Image component
-jest.mock('next/image', () => ({
-  __esModule: true,
-  default: (props: any) => {
-    // eslint-disable-next-line @next/next/no-img-element
-    return <img {...props} alt={props.alt || ''} />;
-  },
-}));
+jest.mock('next/image', () => {
+  const MockedImage = (props) => {
+    // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
+    return React.createElement('img', {
+      ...props,
+      alt: props.alt || '',
+    })
+  }
+  MockedImage.displayName = 'NextImage'
+  return MockedImage
+})
 
 // Mock Next.js router
 jest.mock('next/navigation', () => ({
@@ -183,5 +188,7 @@ global.testUtils.mockApiResponse.data = global.testUtils.mockProduct
 // Clean up after each test
 afterEach(() => {
   jest.clearAllMocks()
-  fetch.mockClear()
+  if (global.fetch && global.fetch.mockClear) {
+    global.fetch.mockClear()
+  }
 })
