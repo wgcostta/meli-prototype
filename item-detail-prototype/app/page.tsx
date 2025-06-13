@@ -21,7 +21,7 @@ interface ProductPageProps {
 }
 
 export default function ProductPage({ params }: ProductPageProps) {
-  const productId = params?.id || 'default-product-id';
+  const productId = params?.id || 'c71ea0ea-f273-4d2c-8a0e-7afe89294b9a';
   
   const { 
     product, 

@@ -144,8 +144,8 @@ interface ApiResponse<Product> {
 
 ### Endpoints Esperados
 
-- `GET /api/products/:id` - Buscar produto por ID
-- `GET /health` - Health check para verificar conectividade
+- `GET /api/v1/products/:id` - Buscar produto por ID
+- `GET /actuator/health` - Health check para verificar conectividade
 
 ## 🎯 Funcionalidades Implementadas
 
@@ -290,7 +290,7 @@ app.use(cors());
 app.use(express.json());
 
 // Health check
-app.get('/health', (req, res) => {
+app.get('/actuator/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
@@ -450,7 +450,7 @@ localStorage.setItem('debug', 'true');
 ### Endpoints Obrigatórios
 
 ```typescript
-// GET /api/products/:id
+// GET /api/v1/products/:id
 // Response: ApiResponse<Product>
 
 // GET /health  

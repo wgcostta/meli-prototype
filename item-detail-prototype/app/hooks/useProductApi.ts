@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Product, ApiResponse, ApiError, ProductState } from '@/types/product';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://meli-backend-33b27898349d.herokuapp.com';
 const MAX_RETRY_ATTEMPTS = 3;
 const RETRY_DELAY = 2000; // 2 segundos
 
@@ -33,7 +33,7 @@ export function useProductApi(productId: string) {
         retryCount: retryAttempt 
       }));
 
-      const response = await fetch(`${API_BASE_URL}/api/products/${productId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/v1/products/${productId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ export function useProductApi(productId: string) {
   // Função para verificar conectividade
   const checkConnectivity = useCallback(async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/health`, {
+      const response = await fetch(`${API_BASE_URL}/actuator/health`, {
         method: 'HEAD',
         signal: AbortSignal.timeout(5000),
       });
@@ -162,7 +162,7 @@ export function useProductReviews(productId: string, page = 1, limit = 10) {
       setError(null);
 
       const response = await fetch(
-        `${API_BASE_URL}/api/products/${productId}/reviews?page=${page}&limit=${limit}`,
+        `${API_BASE_URL}/api/v1/products/${productId}/reviews?page=${page}&limit=${limit}`,
         {
           headers: { 'Content-Type': 'application/json' },
           signal: AbortSignal.timeout(10000),

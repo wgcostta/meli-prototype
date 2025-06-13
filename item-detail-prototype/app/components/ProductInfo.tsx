@@ -136,25 +136,25 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           )}
         </div>
 
-        {/* Variações de Cor (mantidas fixas) */}
+        {/* Variações de Cor */}
         <div className="mb-6">
           <h3 className="font-medium mb-3">Cor: <span className="font-normal">{selectedColor}</span></h3>
-          <div className="flex space-x-2">
+          <div className="grid grid-cols-2 gap-2">
             {colors.map((color) => (
               <button
                 key={color.name}
                 onClick={() => setSelectedColor(color.name)}
-                className={`flex items-center space-x-2 px-4 py-2 border rounded-md text-sm transition-all ${
+                className={`flex items-center space-x-2 px-3 py-2 border rounded-md text-sm transition-all ${
                   selectedColor === color.name
                     ? 'border-blue-500 bg-blue-50 text-blue-700'
                     : 'border-gray-300 hover:border-gray-400'
                 }`}
               >
                 <div 
-                  className="w-4 h-4 rounded-full border border-gray-300"
+                  className="w-4 h-4 rounded-full border border-gray-300 flex-shrink-0"
                   style={{ backgroundColor: color.value }}
                 />
-                <span>{color.name}</span>
+                <span className="truncate">{color.name}</span>
               </button>
             ))}
           </div>
