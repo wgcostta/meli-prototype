@@ -2,17 +2,19 @@
 
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
+import { Product } from '@/types/product';
 
-export default function ProductGallery() {
+interface ProductGalleryProps {
+  product: Product;
+}
+
+export default function ProductGallery({ product }: ProductGalleryProps) {
   const [selectedImage, setSelectedImage] = useState(0);
 
-  const images = [
-    'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&h=500&fit=crop',
-    'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=500&h=500&fit=crop',
-    'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=500&h=500&fit=crop',
-    'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=500&h=500&fit=crop',
-    'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=500&h=500&fit=crop'
-  ];
+  // Usar as imagens do produto ordenadas
+  const images = product.images
+    .sort((a, b) => a.order - b.order)
+    .map(img => img.url);
 
   const nextImage = () => {
     setSelectedImage((prev) => (prev + 1) % images.length);
@@ -29,7 +31,7 @@ export default function ProductGallery() {
         <div className="relative mb-4 group">
           <img 
             src={images[selectedImage]} 
-            alt="Produto"
+            alt={product.images[selectedImage]?.alt || product.title}
             className="w-full h-96 object-cover rounded-lg cursor-zoom-in"
           />
           
@@ -63,7 +65,7 @@ export default function ProductGallery() {
         <div className="flex space-x-2 overflow-x-auto pb-2">
           {images.map((img, index) => (
             <button
-              key={index}
+              key={product.images[index]?.id || index}
               onClick={() => setSelectedImage(index)}
               className={`flex-shrink-0 w-16 h-16 rounded border-2 overflow-hidden transition-all ${
                 selectedImage === index 
@@ -73,7 +75,7 @@ export default function ProductGallery() {
             >
               <img 
                 src={img} 
-                alt={`Produto ${index + 1}`} 
+                alt={product.images[index]?.alt || `${product.title} ${index + 1}`} 
                 className="w-full h-full object-cover" 
               />
             </button>
