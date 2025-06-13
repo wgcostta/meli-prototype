@@ -1,0 +1,21 @@
+# application-test.properties
+spring:
+  config:
+    activate:
+      on-profile: test
+
+  # Configurações de teste para CORS
+cors:
+  test:
+    mode: true
+
+logging:
+  level:
+    com.mercadoclone: DEBUG
+    org.springframework.web: DEBUG
+
+app:
+  data:
+    products-file: classpath:data/products.json
+  images:
+    base-url: http://localhost:3001/images/products

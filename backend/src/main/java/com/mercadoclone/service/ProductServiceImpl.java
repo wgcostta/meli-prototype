@@ -1,0 +1,173 @@
+package com.mercadoclone.service;
+
+import com.mercadoclone.domain.entity.ProductEntity;
+import com.mercadoclone.domain.repository.ProductRepository;
+import com.mercadoclone.exception.ProductNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import java.util.List;
+
+/**
+ * Implementação do serviço de produtos.
+ *
+ * Esta implementação segue os princípios SOLID:
+ * - SRP: Responsável apenas pela lógica de negócio de produtos
+ * - OCP: Pode ser estendida sem modificação
+ * - LSP: Substitui perfeitamente a interface ProductService
+ * - ISP: Implementa apenas a interface necessária
+ * - DIP: Depende de abstrações (ProductRepository)
+ *
+ * @author MercadoClone Team
+ */
+@Service
+public class ProductServiceImpl implements ProductService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
+
+    private final ProductRepository productRepository;
+
+    public ProductServiceImpl(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
+
+    @Override
+    public ProductEntity getProductById(String productId) {
+        logger.info("Getting product by ID: {}", productId);
+
+        validateProductId(productId);
+
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException("Product not found with ID: " + productId));
+    }
+
+    @Override
+    public List<ProductEntity> getAllProducts() {
+        logger.info("Getting all products");
+
+        List<ProductEntity> products = productRepository.findAll();
+        logger.debug("Found {} products", products.size());
+
+        return products;
+    }
+
+    @Override
+    public List<ProductEntity> getProductsByCategory(String categoryId) {
+        logger.info("Getting products by category: {}", categoryId);
+
+        validateNonBlankString(categoryId, "Category ID");
+
+        List<ProductEntity> products = productRepository.findByCategory(categoryId);
+        logger.debug("Found {} products for category: {}", products.size(), categoryId);
+
+        return products;
+    }
+
+    @Override
+    public List<ProductEntity> getProductsByBrand(String brand) {
+        logger.info("Getting products by brand: {}", brand);
+
+        validateNonBlankString(brand, "Brand");
+
+        List<ProductEntity> products = productRepository.findByBrand(brand);
+        logger.debug("Found {} products for brand: {}", products.size(), brand);
+
+        return products;
+    }
+
+    @Override
+    public List<ProductEntity> searchProducts(String searchTerm) {
+        logger.info("Searching products with term: {}", searchTerm);
+
+        validateNonBlankString(searchTerm, "Search term");
+
+        List<ProductEntity> products = productRepository.findBySearchTerm(searchTerm);
+        logger.debug("Found {} products for search term: {}", products.size(), searchTerm);
+
+        return products;
+    }
+
+    @Override
+    public List<ProductEntity> getAvailableProducts() {
+        logger.info("Getting available products");
+
+        List<ProductEntity> products = productRepository.findAvailableProducts();
+        logger.debug("Found {} available products", products.size());
+
+        return products;
+    }
+
+    @Override
+    public List<ProductEntity> getProductsWithDiscount() {
+        logger.info("Getting products with discount");
+
+        List<ProductEntity> products = productRepository.findProductsWithDiscount();
+        logger.debug("Found {} products with discount", products.size());
+
+        return products;
+    }
+
+    @Override
+    public List<ProductEntity> getProductsByPriceRange(Double minPrice, Double maxPrice) {
+        logger.info("Getting products by price range: {} - {}", minPrice, maxPrice);
+
+        validatePriceRange(minPrice, maxPrice);
+
+        List<ProductEntity> products = productRepository.findByPriceRange(minPrice, maxPrice);
+        logger.debug("Found {} products in price range: {} - {}", products.size(), minPrice, maxPrice);
+
+        return products;
+    }
+
+    @Override
+    public boolean productExists(String productId) {
+        logger.debug("Checking if product exists: {}", productId);
+
+        validateProductId(productId);
+
+        return productRepository.existsById(productId);
+    }
+
+    @Override
+    public long getTotalProductCount() {
+        logger.debug("Getting total product count");
+
+        long count = productRepository.count();
+        logger.debug("Total product count: {}", count);
+
+        return count;
+    }
+
+    /**
+     * Valida o ID do produto.
+     */
+    private void validateProductId(String productId) {
+        validateNonBlankString(productId, "Product ID");
+    }
+
+    /**
+     * Valida se a string não é nula ou vazia.
+     */
+    private void validateNonBlankString(String value, String fieldName) {
+        if (!StringUtils.hasText(value)) {
+            throw new IllegalArgumentException(fieldName + " cannot be null or blank");
+        }
+    }
+
+    /**
+     * Valida a faixa de preços.
+     */
+    private void validatePriceRange(Double minPrice, Double maxPrice) {
+        if (minPrice == null || maxPrice == null) {
+            throw new IllegalArgumentException("Price range values cannot be null");
+        }
+        if (minPrice < 0 || maxPrice < 0) {
+            throw new IllegalArgumentException("Price values cannot be negative");
+        }
+        if (minPrice > maxPrice) {
+            throw new IllegalArgumentException("Minimum price cannot be greater than maximum price");
+        }
+    }
+}
