@@ -1,0 +1,39 @@
+services:
+  backend:
+    build:
+      context: ./mercadoclone-backend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./mercadoclone-backend/src:/app/src
+      - ./mercadoclone-backend/src/main/resources/static/images:/app/images
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DEVTOOLS_RESTART_ENABLED=true
+      - SERVER_PORT=3001
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./mercadoclone-frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./mercadoclone-frontend:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+      - WATCHPACK_POLLING=true
+      - REACT_APP_API_URL=http://backend:3001
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
