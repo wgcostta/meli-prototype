@@ -129,4 +129,166 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.success", is(true)))
                 .andExpect(jsonPath("$.data", hasSize(0)));
     }
+
+    @Test
+    @DisplayName("Should return total product count successfully")
+    void shouldReturnTotalProductCountSuccessfully() throws Exception {
+        // Given
+        long expectedCount = 150L;
+        when(productService.getTotalProductCount()).thenReturn(expectedCount);
+
+        // When & Then
+        mockMvc.perform(get("/api/v1/products/count"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.success", is(true)))
+                .andExpect(jsonPath("$.data", is(150)));
+    }
+
+    @Test
+    @DisplayName("Should return true when product exists")
+    void shouldReturnTrueWhenProductExists() throws Exception {
+        // Given
+        String productId = "existing-product-id";
+        when(productService.productExists(productId)).thenReturn(true);
+
+        // When & Then
+        mockMvc.perform(get("/api/v1/products/{productId}/exists", productId))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.success", is(true)))
+                .andExpect(jsonPath("$.data", is(true)));
+    }
+
+    @Test
+    @DisplayName("Should return false when product does not exist")
+    void shouldReturnFalseWhenProductDoesNotExist() throws Exception {
+        // Given
+        String productId = "non-existing-product-id";
+        when(productService.productExists(productId)).thenReturn(false);
+
+        // When & Then
+        mockMvc.perform(get("/api/v1/products/{productId}/exists", productId))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.success", is(true)))
+                .andExpect(jsonPath("$.data", is(false)));
+    }
+
+    @Test
+    @DisplayName("Should return products filtered by brand successfully")
+    void shouldReturnProductsFilteredByBrandSuccessfully() throws Exception {
+        // Given
+        List<ProductEntity> products = Arrays.asList(
+                new ProductEntity("product-001", "Samsung Phone", "Samsung smartphone"),
+                new ProductEntity("product-002", "Samsung TV", "Samsung television")
+        );
+
+        when(productService.findAll(ArgumentMatchers.any())).thenReturn(products);
+
+        List<ProductResponse> responseList = productMapperInstance.toResponseList(products);
+        when(productMapper.toResponseList(products)).thenReturn(responseList);
+
+        // When & Then
+        mockMvc.perform(get("/api/v1/products")
+                        .param("brandId", "Samsung"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(true)))
+                .andExpect(jsonPath("$.data", hasSize(2)))
+                .andExpect(jsonPath("$.data[0].id", is("product-001")))
+                .andExpect(jsonPath("$.data[1].id", is("product-002")));
+    }
+
+    @Test
+    @DisplayName("Should return available products successfully")
+    void shouldReturnAvailableProductsSuccessfully() throws Exception {
+        // Given
+        List<ProductEntity> products = Arrays.asList(
+                new ProductEntity("product-001", "Available Product 1", "Description 1"),
+                new ProductEntity("product-002", "Available Product 2", "Description 2")
+        );
+
+        when(productService.findAll(ArgumentMatchers.any())).thenReturn(products);
+
+        List<ProductResponse> responseList = productMapperInstance.toResponseList(products);
+        when(productMapper.toResponseList(products)).thenReturn(responseList);
+
+        // When & Then
+        mockMvc.perform(get("/api/v1/products")
+                        .param("available", "true"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(true)))
+                .andExpect(jsonPath("$.data", hasSize(2)))
+                .andExpect(jsonPath("$.data[0].id", is("product-001")))
+                .andExpect(jsonPath("$.data[1].id", is("product-002")));
+    }
+
+    @Test
+    @DisplayName("Should return discounted products successfully")
+    void shouldReturnDiscountedProductsSuccessfully() throws Exception {
+        // Given
+        List<ProductEntity> products = Arrays.asList(
+                new ProductEntity("product-001", "Discounted Product 1", "Product with discount"),
+                new ProductEntity("product-002", "Discounted Product 2", "Another discounted product")
+        );
+
+        when(productService.findAll(ArgumentMatchers.any())).thenReturn(products);
+
+        List<ProductResponse> responseList = productMapperInstance.toResponseList(products);
+        when(productMapper.toResponseList(products)).thenReturn(responseList);
+
+        // When & Then
+        mockMvc.perform(get("/api/v1/products")
+                        .param("discounted", "true"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(true)))
+                .andExpect(jsonPath("$.data", hasSize(2)))
+                .andExpect(jsonPath("$.data[0].id", is("product-001")))
+                .andExpect(jsonPath("$.data[1].id", is("product-002")));
+    }
+
+    @Test
+    @DisplayName("Should handle empty brand filter results")
+    void shouldHandleEmptyBrandFilterResults() throws Exception {
+        // Given
+        when(productService.findAll(ArgumentMatchers.any())).thenReturn(Arrays.asList());
+        when(productMapper.toResponseList(Arrays.asList())).thenReturn(Arrays.asList());
+
+        // When & Then
+        mockMvc.perform(get("/api/v1/products")
+                        .param("brandId", "NonExistentBrand"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(true)))
+                .andExpect(jsonPath("$.data", hasSize(0)));
+    }
+
+    @Test
+    @DisplayName("Should handle empty available products results")
+    void shouldHandleEmptyAvailableProductsResults() throws Exception {
+        // Given
+        when(productService.findAll(ArgumentMatchers.any())).thenReturn(Arrays.asList());
+        when(productMapper.toResponseList(Arrays.asList())).thenReturn(Arrays.asList());
+
+        // When & Then
+        mockMvc.perform(get("/api/v1/products")
+                        .param("available", "true"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(true)))
+                .andExpect(jsonPath("$.data", hasSize(0)));
+    }
+
+    @Test
+    @DisplayName("Should handle empty discounted products results")
+    void shouldHandleEmptyDiscountedProductsResults() throws Exception {
+        // Given
+        when(productService.findAll(ArgumentMatchers.any())).thenReturn(Arrays.asList());
+        when(productMapper.toResponseList(Arrays.asList())).thenReturn(Arrays.asList());
+
+        // When & Then
+        mockMvc.perform(get("/api/v1/products")
+                        .param("discounted", "true"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(true)))
+                .andExpect(jsonPath("$.data", hasSize(0)));
+    }
 }
