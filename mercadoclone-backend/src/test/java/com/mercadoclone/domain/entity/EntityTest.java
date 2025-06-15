@@ -73,7 +73,7 @@ class EntityTest {
             void shouldReturnTrueWhenSellerIsOfficial() {
                 SellerEntity seller = new SellerEntity();
                 seller.setIsOfficial(true);
-                seller.setReputation(3.0); // Reputação baixa, mas é oficial
+                seller.setReputation(3.0); // Low reputation, but is official
 
                 assertThat(seller.isTrusted()).isTrue();
             }
@@ -206,7 +206,7 @@ class EntityTest {
             void shouldCreateImageWithParameterizedConstructor() {
                 String id = "img123";
                 String url = "https://example.com/image.jpg";
-                String alt = "Produto exemplo";
+                String alt = "Example product";
                 Integer order = 1;
 
                 ProductImageEntity image = new ProductImageEntity(id, url, alt, order);
@@ -224,12 +224,12 @@ class EntityTest {
 
                 image.setId("img456");
                 image.setUrl("https://example.com/image2.jpg");
-                image.setAlt("Imagem do produto");
+                image.setAlt("Product image");
                 image.setOrder(2);
 
                 assertThat(image.getId()).isEqualTo("img456");
                 assertThat(image.getUrl()).isEqualTo("https://example.com/image2.jpg");
-                assertThat(image.getAlt()).isEqualTo("Imagem do produto");
+                assertThat(image.getAlt()).isEqualTo("Product image");
                 assertThat(image.getOrder()).isEqualTo(2);
             }
 
@@ -299,7 +299,7 @@ class EntityTest {
             @DisplayName("Should create payment method with all parameters")
             void shouldCreatePaymentMethodWithAllParameters() {
                 String type = "CREDIT_CARD";
-                String name = "Cartão de Crédito";
+                String name = "Credit Card";
                 String icon = "credit-card-icon";
                 Integer installments = 12;
                 Double discount = 0.05;
@@ -336,7 +336,7 @@ class EntityTest {
                 @Test
                 @DisplayName("Should return false when installments is null")
                 void shouldReturnFalseWhenInstallmentsIsNull() {
-                    PaymentMethodEntity paymentMethod = new PaymentMethodEntity("BANK_TRANSFER", "Transferência", "bank-icon", null, 0.0);
+                    PaymentMethodEntity paymentMethod = new PaymentMethodEntity("BANK_TRANSFER", "Bank Transfer", "bank-icon", null, 0.0);
 
                     assertThat(paymentMethod.allowsInstallments()).isFalse();
                 }
@@ -344,7 +344,7 @@ class EntityTest {
                 @Test
                 @DisplayName("Should return false when installments = 0")
                 void shouldReturnFalseWhenInstallmentsIsZero() {
-                    PaymentMethodEntity paymentMethod = new PaymentMethodEntity("CASH", "Dinheiro", "cash-icon", 0, 0.0);
+                    PaymentMethodEntity paymentMethod = new PaymentMethodEntity("CASH", "Cash", "cash-icon", 0, 0.0);
 
                     assertThat(paymentMethod.allowsInstallments()).isFalse();
                 }
@@ -476,7 +476,7 @@ class EntityTest {
                 Boolean free = true;
                 Integer estimatedDays = 3;
                 Double cost = 0.0;
-                String description = "Frete grátis";
+                String description = "Free shipping";
 
                 ShippingEntity shipping = new ShippingEntity(free, estimatedDays, cost, description);
 
@@ -494,12 +494,12 @@ class EntityTest {
                 shipping.setFree(false);
                 shipping.setEstimatedDays(5);
                 shipping.setCost(15.99);
-                shipping.setDescription("Frete padrão");
+                shipping.setDescription("Standard shipping");
 
                 assertThat(shipping.getFree()).isFalse();
                 assertThat(shipping.getEstimatedDays()).isEqualTo(5);
                 assertThat(shipping.getCost()).isEqualTo(15.99);
-                assertThat(shipping.getDescription()).isEqualTo("Frete padrão");
+                assertThat(shipping.getDescription()).isEqualTo("Standard shipping");
             }
 
             @Nested
