@@ -2,10 +2,13 @@ package com.mercadoclone.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mercadoclone.domain.entity.ProductEntity;
+import com.mercadoclone.dto.mapper.ProductMapper;
+import com.mercadoclone.dto.response.ProductResponse;
 import com.mercadoclone.exception.ProductNotFoundException;
-import com.mercadoclone.service.ProductService;
+import com.mercadoclone.service.ProductUseCase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -31,7 +34,12 @@ class ProductControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private ProductService productService;
+    private ProductUseCase productService;
+
+    private ProductMapper productMapperInstance = Mappers.getMapper(ProductMapper.class);
+
+    @MockBean
+    private ProductMapper productMapper;
 
     @Test
     @DisplayName("Should return product successfully when valid ID provided")
@@ -40,12 +48,17 @@ class ProductControllerTest {
         ProductEntity product = new ProductEntity("product-001", "Test Product", "Test Description");
         when(productService.getProductById("product-001")).thenReturn(product);
 
+        // Mock the mapper to return a DTO
+        ProductResponse response = productMapperInstance.toResponse(product);
+
+        when(productMapper.toResponse(product)).thenReturn(response);
+
         // When & Then
         mockMvc.perform(get("/api/v1/products/product-001"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.success", is(true)))
-                .andExpect(jsonPath("$.data.id", is("product-001")))
+                .andExpect(jsonPath("$.data.id", is(response.id())))
                 .andExpect(jsonPath("$.data.title", is("Test Product")));
     }
 
@@ -71,7 +84,12 @@ class ProductControllerTest {
                 new ProductEntity("product-001", "Product 1", "Description 1"),
                 new ProductEntity("product-002", "Product 2", "Description 2")
         );
+
         when(productService.getAllProducts()).thenReturn(products);
+
+        // Mock the mapper to return a list of DTOs
+        List<ProductResponse> responseList = productMapperInstance.toResponseList(products);
+        when(productMapper.toResponseList(products)).thenReturn(responseList);
 
         // When & Then
         mockMvc.perform(get("/api/v1/products"))

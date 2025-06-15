@@ -1,8 +1,10 @@
 package com.mercadoclone.controller;
 
 import com.mercadoclone.domain.entity.ProductEntity;
+import com.mercadoclone.dto.mapper.ProductMapper;
 import com.mercadoclone.dto.response.ApiResponse;
-import com.mercadoclone.service.ProductService;
+import com.mercadoclone.dto.response.ProductResponse;
+import com.mercadoclone.service.ProductUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -37,10 +39,13 @@ public class ProductController {
 
     private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
 
-    private final ProductService productService;
+    private final ProductUseCase productService;
 
-    public ProductController(ProductService productService) {
+    private final ProductMapper productMapper;
+
+    public ProductController(ProductUseCase productService, ProductMapper productMapper) {
         this.productService = productService;
+        this.productMapper = productMapper;
     }
 
     @Operation(
@@ -63,7 +68,7 @@ public class ProductController {
             )
     })
     @GetMapping("/{productId}")
-    public ResponseEntity<ApiResponse<ProductEntity>> getProductById(
+    public ResponseEntity<ApiResponse<ProductResponse>> getProductById(
             @Parameter(description = "ID único do produto", required = true)
             @PathVariable @NotBlank String productId) {
 
@@ -71,8 +76,10 @@ public class ProductController {
 
         ProductEntity product = productService.getProductById(productId);
 
+        ProductResponse response = productMapper.toResponse(product);
+
         logger.debug("Successfully retrieved product: {}", product.getId());
-        return ResponseEntity.ok(ApiResponse.success(product));
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     @Operation(
@@ -86,13 +93,15 @@ public class ProductController {
             )
     })
     @GetMapping
-    public ResponseEntity<ApiResponse<List<ProductEntity>>> getAllProducts() {
+    public ResponseEntity<ApiResponse<List<ProductResponse>>> getAllProducts() {
         logger.info("REST request to get all products");
 
         List<ProductEntity> products = productService.getAllProducts();
 
+        List<ProductResponse> productResponses = productMapper.toResponseList(products);
+
         logger.debug("Successfully retrieved {} products", products.size());
-        return ResponseEntity.ok(ApiResponse.success(products));
+        return ResponseEntity.ok(ApiResponse.success(productResponses));
     }
 
     @Operation(
@@ -100,7 +109,7 @@ public class ProductController {
             description = "Retorna uma lista de produtos filtrados por categoria"
     )
     @GetMapping("/category/{categoryId}")
-    public ResponseEntity<ApiResponse<List<ProductEntity>>> getProductsByCategory(
+    public ResponseEntity<ApiResponse<List<ProductResponse>>> getProductsByCategory(
             @Parameter(description = "ID da categoria", required = true)
             @PathVariable @NotBlank String categoryId) {
 
@@ -108,8 +117,10 @@ public class ProductController {
 
         List<ProductEntity> products = productService.getProductsByCategory(categoryId);
 
+        List<ProductResponse> productResponses = productMapper.toResponseList(products);
+
         logger.debug("Successfully retrieved {} products for category: {}", products.size(), categoryId);
-        return ResponseEntity.ok(ApiResponse.success(products));
+        return ResponseEntity.ok(ApiResponse.success(productResponses));
     }
 
     @Operation(
@@ -117,7 +128,7 @@ public class ProductController {
             description = "Retorna uma lista de produtos filtrados por marca"
     )
     @GetMapping("/brand/{brand}")
-    public ResponseEntity<ApiResponse<List<ProductEntity>>> getProductsByBrand(
+    public ResponseEntity<ApiResponse<List<ProductResponse>>> getProductsByBrand(
             @Parameter(description = "Nome da marca", required = true)
             @PathVariable @NotBlank String brand) {
 
@@ -125,8 +136,10 @@ public class ProductController {
 
         List<ProductEntity> products = productService.getProductsByBrand(brand);
 
+        List<ProductResponse> productResponses = productMapper.toResponseList(products);
+
         logger.debug("Successfully retrieved {} products for brand: {}", products.size(), brand);
-        return ResponseEntity.ok(ApiResponse.success(products));
+        return ResponseEntity.ok(ApiResponse.success(productResponses));
     }
 
     @Operation(
@@ -134,7 +147,7 @@ public class ProductController {
             description = "Busca produtos por termo de pesquisa no título ou descrição"
     )
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<List<ProductEntity>>> searchProducts(
+    public ResponseEntity<ApiResponse<List<ProductResponse>>> searchProducts(
             @Parameter(description = "Termo de pesquisa", required = true)
             @RequestParam @NotBlank String q) {
 
@@ -142,8 +155,10 @@ public class ProductController {
 
         List<ProductEntity> products = productService.searchProducts(q);
 
+        List<ProductResponse> productResponses = productMapper.toResponseList(products);
+
         logger.debug("Successfully found {} products for search term: {}", products.size(), q);
-        return ResponseEntity.ok(ApiResponse.success(products));
+        return ResponseEntity.ok(ApiResponse.success(productResponses));
     }
 
     @Operation(
@@ -151,13 +166,15 @@ public class ProductController {
             description = "Retorna uma lista de produtos com estoque disponível"
     )
     @GetMapping("/available")
-    public ResponseEntity<ApiResponse<List<ProductEntity>>> getAvailableProducts() {
+    public ResponseEntity<ApiResponse<List<ProductResponse>>> getAvailableProducts() {
         logger.info("REST request to get available products");
 
         List<ProductEntity> products = productService.getAvailableProducts();
 
+        List<ProductResponse> productResponses = productMapper.toResponseList(products);
+
         logger.debug("Successfully retrieved {} available products", products.size());
-        return ResponseEntity.ok(ApiResponse.success(products));
+        return ResponseEntity.ok(ApiResponse.success(productResponses));
     }
 
     @Operation(
@@ -165,13 +182,15 @@ public class ProductController {
             description = "Retorna uma lista de produtos que possuem desconto aplicado"
     )
     @GetMapping("/discounted")
-    public ResponseEntity<ApiResponse<List<ProductEntity>>> getProductsWithDiscount() {
+    public ResponseEntity<ApiResponse<List<ProductResponse>>> getProductsWithDiscount() {
         logger.info("REST request to get products with discount");
 
         List<ProductEntity> products = productService.getProductsWithDiscount();
 
+        List<ProductResponse> productResponses = productMapper.toResponseList(products);
+
         logger.debug("Successfully retrieved {} products with discount", products.size());
-        return ResponseEntity.ok(ApiResponse.success(products));
+        return ResponseEntity.ok(ApiResponse.success(productResponses));
     }
 
     @Operation(
@@ -179,7 +198,7 @@ public class ProductController {
             description = "Retorna uma lista de produtos filtrados por faixa de preço"
     )
     @GetMapping("/price-range")
-    public ResponseEntity<ApiResponse<List<ProductEntity>>> getProductsByPriceRange(
+    public ResponseEntity<ApiResponse<List<ProductResponse>>> getProductsByPriceRange(
             @Parameter(description = "Preço mínimo", required = true)
             @RequestParam @PositiveOrZero Double minPrice,
             @Parameter(description = "Preço máximo", required = true)
@@ -189,9 +208,11 @@ public class ProductController {
 
         List<ProductEntity> products = productService.getProductsByPriceRange(minPrice, maxPrice);
 
+        List<ProductResponse> productResponses = productMapper.toResponseList(products);
+
         logger.debug("Successfully retrieved {} products in price range: {} - {}",
                 products.size(), minPrice, maxPrice);
-        return ResponseEntity.ok(ApiResponse.success(products));
+        return ResponseEntity.ok(ApiResponse.success(productResponses));
     }
 
     @Operation(

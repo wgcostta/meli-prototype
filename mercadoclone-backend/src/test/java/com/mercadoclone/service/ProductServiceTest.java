@@ -31,7 +31,7 @@ class ProductServiceTest {
     private ProductRepository productRepository;
 
     @InjectMocks
-    private ProductServiceImpl productService;
+    private ProductService productService;
 
     private ProductEntity sampleProduct;
 
