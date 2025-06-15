@@ -295,7 +295,7 @@ app.get('/actuator/health', (req, res) => {
 });
 
 // Produto mock
-app.get('/api/products/:id', (req, res) => {
+app.get('/api/v1/products/:id', (req, res) => {
   res.json({
     success: true,
     data: {

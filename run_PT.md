@@ -13,7 +13,7 @@ Este guia explica como executar a aplicação completa usando Docker ou individu
 ### Executar toda a aplicação
 ```bash
 # Subir todos os serviços
-docker-compose up -d
+docker-compose up
 
 # Visualizar logs em tempo real
 docker-compose logs -f

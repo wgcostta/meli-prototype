@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
-import { Product, ApiResponse, ApiError, ProductState } from '@/types/product'
+import { Product, ApiResponse, ProductState } from '@/types/product'
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://meli-backend-33b27898349d.herokuapp.com';
 
 interface UseProductApiOptions {
   retryAttempts?: number
@@ -58,10 +60,9 @@ export function useProductApi(
         error: attempt === 1 ? null : prev.error
       }))
 
-      // Usar timeout controller personalizado
       const { controller, timeoutId } = createTimeoutController(timeoutMs)
 
-      const response = await fetch(`/api/products/${productId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/v1/products/${productId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
