@@ -1,4 +1,4 @@
-Feature: Buscar Produto
+Feature: BDD - Cenários de Consulta de Produtos
   Como um usuário da API
   Eu quero buscar produtos
   Para obter informações detalhadas

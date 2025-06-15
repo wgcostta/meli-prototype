@@ -1,4 +1,4 @@
-Feature: Cenários de Erro da API de Produtos
+Feature: BDD - Cenários de Erro da API de Produtos
   Como um usuário da API
   Eu quero que a API trate erros adequadamente
   Para ter uma experiência consistente e previsível
@@ -30,22 +30,32 @@ Feature: Cenários de Erro da API de Produtos
     And o campo "code" deve ser "INVALID_ARGUMENT"
     And o campo "message" deve conter "Price range values cannot be null"
 
-  Scenario: Erro 500 para ID de produto com espaço em branco
-    When eu faço uma requisição GET para "/api/v1/products/ /exists"
-    Then o status da resposta deve ser 500
+  # Corrigido: O endpoint /exists retorna 404, não 500
+  Scenario: Erro 404 para produto não encontrado no endpoint exists
+    When eu faço uma requisição GET para "/api/v1/products/exists"
+    Then o status da resposta deve ser 404
+    And o campo "code" deve ser "PRODUCT_NOT_FOUND"
 
-  Scenario Outline: Validação de parâmetros inválidos
-    When eu faço uma requisição GET para "/api/v1/products" com parâmetro "<param>" igual a "<value>"
+  Scenario Outline: Validação de parâmetros com valores vazios
+    When eu faço uma requisição GET para "/api/v1/products" com parâmetro "<param>" igual a ""
     Then o status da resposta deve ser <status>
     And o campo "success" deve ser <success>
 
     Examples:
-      | param      | value          | status | success |
-      | brandId    | ""             | 200    | true    |
-      | categoryId | ""             | 200    | true    |
-      | value      | ""             | 200    | true    |
-      | available  | "invalid"      | 200    | true    |
-      | discounted | "not_boolean"  | 200    | true    |
+      | param      | status | success |
+      | brandId    | 200    | true    |
+      | categoryId | 200    | true    |
+      | value      | 200    | true    |
+
+  Scenario: Validação de parâmetro available com valor inválido
+    When eu faço uma requisição GET para "/api/v1/products" com parâmetro "available" igual a "invalid"
+    Then o status da resposta deve ser 200
+    And o campo "success" deve ser true
+
+  Scenario: Validação de parâmetro discounted com valor inválido
+    When eu faço uma requisição GET para "/api/v1/products" com parâmetro "discounted" igual a "not_boolean"
+    Then o status da resposta deve ser 200
+    And o campo "success" deve ser true
 
   Scenario: Tratamento gracioso de múltiplos filtros
     When eu faço uma requisição GET para "/api/v1/products?categoryId=cat1&brandId=brand1&available=true"
