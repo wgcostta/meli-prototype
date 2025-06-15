@@ -10,10 +10,9 @@ interface ProductInfoProps {
 
 export default function ProductInfo({ product }: ProductInfoProps) {
   const [quantity, setQuantity] = useState(1);
-  const [selectedColor, setSelectedColor] = useState('Azul'); // Mantido fixo como solicitado
+  const [selectedColor, setSelectedColor] = useState('Azul');
   const [isFavorite, setIsFavorite] = useState(false);
 
-  // Cores fixas (mantidas como no código original)
   const colors = [
     { name: 'Azul', value: '#3B82F6' },
     { name: 'Preto', value: '#1F2937' },
@@ -29,15 +28,13 @@ export default function ProductInfo({ product }: ProductInfoProps) {
     }
   };
 
-  // Formatação de preço
   const formatPrice = (price: number, currency: string = 'BRL') => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
-      currency: currency === 'USD' ? 'BRL' : currency, // Converter USD para BRL para exibição
+      currency: currency === 'USD' ? 'BRL' : currency,
     }).format(price);
   };
 
-  // Calcular desconto
   const discountPercentage = product.price.original 
     ? Math.round(((product.price.original - product.price.current) / product.price.original) * 100)
     : product.price.discount || 0;
@@ -47,9 +44,10 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       {/* Informações Principais */}
       <div className="bg-white rounded-lg p-6 shadow-sm">
         <div className="flex items-start justify-between mb-4">
-          <h1 className="text-xl font-semibold text-gray-900 leading-tight">
+          {/* CORREÇÃO: Mudança de h1 para h2 */}
+          <h2 className="text-xl font-semibold text-gray-900 leading-tight">
             {product.title}
-          </h1>
+          </h2>
           <div className="flex space-x-2 ml-4">
             <button 
               onClick={() => setIsFavorite(!isFavorite)}
@@ -70,7 +68,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           </div>
         </div>
 
-        {/* Avaliações */}
+        {/* Resto do componente permanece igual... */}
         <div className="flex items-center space-x-2 mb-4">
           <div className="flex text-yellow-400">
             {[...Array(5)].map((_, i) => (
@@ -93,7 +91,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           </span>
         </div>
 
-        {/* Marca */}
+        {/* Resto do componente continua igual... */}
         {product.brand && (
           <div className="mb-4">
             <span className="text-sm text-gray-600">Marca: </span>
@@ -121,7 +119,6 @@ export default function ProductInfo({ product }: ProductInfoProps) {
             )}
           </div>
           
-          {/* Métodos de pagamento */}
           {product.paymentMethods && product.paymentMethods.length > 0 && (
             <div className="space-y-1">
               {product.paymentMethods.map((method, index) => (
@@ -205,7 +202,6 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 
         {/* Informações de Entrega e Garantias */}
         <div className="space-y-4 pt-4 border-t border-gray-200">
-          {/* Frete */}
           {product.shipping && (
             <div className="flex items-start space-x-3">
               <Truck size={20} className={`mt-0.5 ${product.shipping.free ? 'text-green-600' : 'text-gray-600'}`} />
@@ -242,7 +238,6 @@ export default function ProductInfo({ product }: ProductInfoProps) {
             </div>
           )}
 
-          {/* Garantia */}
           {product.warranty && (
             <div className="text-sm text-gray-600">
               <strong>Garantia:</strong> {product.warranty}

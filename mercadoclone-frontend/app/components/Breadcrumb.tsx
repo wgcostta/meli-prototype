@@ -51,7 +51,10 @@ export default function Breadcrumb({ product }: BreadcrumbProps) {
     : defaultBreadcrumb;
 
   return (
-    <nav className="max-w-6xl mx-auto px-4 py-3 text-sm text-gray-600 bg-white border-b">
+    <nav 
+      aria-label="Breadcrumb" 
+      className="max-w-6xl mx-auto px-4 py-3 text-sm text-gray-600 bg-white border-b"
+    >
       <div className="flex items-center space-x-2 flex-wrap">
         {breadcrumbItems.map((item, index) => (
           <React.Fragment key={index}>

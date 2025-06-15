@@ -19,13 +19,11 @@ export default function ProductDescription({ product }: ProductDescriptionProps)
     { id: 'questions', label: 'Perguntas' }
   ];
 
-  // Usar especificações do produto ou valores padrão
   const specifications = Object.entries(product.specifications || {}).map(([key, value]) => ({
     label: key,
     value: value
   }));
 
-  // Mock de reviews (mantido fixo pois não está na estrutura atual)
   const reviews = [
     {
       name: 'João Silva',
@@ -51,7 +49,11 @@ export default function ProductDescription({ product }: ProductDescriptionProps)
     <div className="mt-8 bg-white rounded-lg shadow-sm">
       {/* Tabs */}
       <div className="border-b border-gray-200">
-        <nav className="flex space-x-8 px-6">
+        {/* CORREÇÃO: Adicionar aria-label="Product information tabs" */}
+        <nav 
+          aria-label="Product information tabs" 
+          className="flex space-x-8 px-6"
+        >
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -61,6 +63,9 @@ export default function ProductDescription({ product }: ProductDescriptionProps)
                   ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700'
               }`}
+              role="tab"
+              aria-selected={activeTab === tab.id}
+              aria-controls={`tabpanel-${tab.id}`}
             >
               {tab.label}
             </button>
@@ -69,7 +74,12 @@ export default function ProductDescription({ product }: ProductDescriptionProps)
       </div>
 
       {/* Tab Content */}
-      <div className="p-6">
+      <div 
+        className="p-6"
+        role="tabpanel" 
+        id={`tabpanel-${activeTab}`}
+        aria-labelledby={`tab-${activeTab}`}
+      >
         {activeTab === 'description' && (
           <div>
             <h2 className="text-xl font-semibold mb-4">Descrição do produto</h2>
@@ -144,7 +154,6 @@ export default function ProductDescription({ product }: ProductDescriptionProps)
           <div>
             <h2 className="text-xl font-semibold mb-4">Avaliações dos compradores</h2>
             
-            {/* Resumo das avaliações usando dados do produto */}
             <div className="bg-gray-50 p-4 rounded-lg mb-6">
               <div className="flex items-center space-x-4">
                 <div className="text-center">
