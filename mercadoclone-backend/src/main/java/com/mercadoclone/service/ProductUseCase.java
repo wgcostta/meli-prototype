@@ -5,96 +5,88 @@ import com.mercadoclone.dto.request.FilterRequest;
 
 import java.util.List;
 
-/**
- * Interface do serviço de produtos.
- *
- * Define as operações de negócio relacionadas aos produtos,
- * seguindo o princípio de Segregação de Interface (ISP).
- *
- * @author MercadoClone Team
- */
 public interface ProductUseCase {
 
     /**
-     * Busca um produto por seu identificador único.
+     * Finds a product by its unique identifier.
      *
-     * @param productId o identificador único do produto
-     * @return o produto encontrado
-     * @throws ProductNotFoundException se o produto não for encontrado
-     * @throws IllegalArgumentException se productId for inválido
+     * @param productId the unique product identifier
+     * @return the found product
+     * @throws ProductNotFoundException if the product is not found
+     * @throws IllegalArgumentException if productId is invalid
      */
     ProductEntity findById(String productId);
 
     /**
-     * Lista todos os produtos disponíveis.
+     * Lists all available products.
      *
-     * @return lista de todos os produtos
+     * @return list of all products
      */
     List<ProductEntity> findAll(FilterRequest filterRequest);
 
     /**
-     * Busca produtos por categoria.
+     * Finds products by category.
      *
-     * @param categoryId o identificador da categoria
-     * @return lista de produtos da categoria
-     * @throws IllegalArgumentException se categoryId for inválido
+     * @param categoryId the category identifier
+     * @return list of products from the category
+     * @throws IllegalArgumentException if categoryId is invalid
      */
     List<ProductEntity> getProductsByCategory(String categoryId);
 
     /**
-     * Busca produtos por marca.
+     * Finds products by brand.
      *
-     * @param brand o nome da marca
-     * @return lista de produtos da marca
-     * @throws IllegalArgumentException se brand for inválido
+     * @param brand the brand name
+     * @return list of products from the brand
+     * @throws IllegalArgumentException if brand is invalid
      */
     List<ProductEntity> getProductsByBrand(String brand);
 
     /**
-     * Busca produtos por termo de pesquisa.
+     * Finds products by search term.
      *
-     * @param searchTerm o termo a ser pesquisado
-     * @return lista de produtos que correspondem ao termo
-     * @throws IllegalArgumentException se searchTerm for inválido
+     * @param searchTerm the term to search for
+     * @return list of products matching the term
+     * @throws IllegalArgumentException if searchTerm is invalid
      */
     List<ProductEntity> searchProducts(String searchTerm);
 
     /**
-     * Lista produtos disponíveis em estoque.
+     * Lists products available in stock.
      *
-     * @return lista de produtos disponíveis
+     * @return list of available products
      */
     List<ProductEntity> getAvailableProducts();
 
     /**
-     * Lista produtos com desconto.
+     * Lists products with discount.
      *
-     * @return lista de produtos com desconto
+     * @return list of products with discount
      */
     List<ProductEntity> getProductsWithDiscount();
 
     /**
-     * Busca produtos por faixa de preço.
+     * Finds products by price range.
      *
-     * @param minPrice preço mínimo
-     * @param maxPrice preço máximo
-     * @return lista de produtos na faixa de preço
-     * @throws IllegalArgumentException se a faixa de preço for inválida
+     * @param minPrice minimum price
+     * @param maxPrice maximum price
+     * @return list of products in the price range
+     * @throws IllegalArgumentException if the price range is invalid
      */
     List<ProductEntity> getProductsByPriceRange(Double minPrice, Double maxPrice);
 
     /**
-     * Verifica se um produto existe.
+     * Checks if a product exists.
      *
-     * @param productId o identificador do produto
-     * @return true se o produto existir
+     * @param productId the product identifier
+     * @return true if the product exists
      */
     boolean productExists(String productId);
 
     /**
-     * Retorna o total de produtos cadastrados.
+     * Returns the total number of registered products.
      *
-     * @return número total de produtos
+     * @return total number of products
      */
     long getTotalProductCount();
 }

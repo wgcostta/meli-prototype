@@ -12,16 +12,16 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * Implementação do serviço de produtos.
+ * Product service implementation.
  *
- * Esta implementação segue os princípios SOLID:
- * - SRP: Responsável apenas pela lógica de negócio de produtos
- * - OCP: Pode ser estendida sem modificação
- * - LSP: Substitui perfeitamente a interface ProductService
- * - ISP: Implementa apenas a interface necessária
- * - DIP: Depende de abstrações (ProductRepository)
+ * This implementation follows SOLID principles:
+ * - SRP: Responsible only for product business logic
+ * - OCP: Can be extended without modification
+ * - LSP: Perfectly substitutes the ProductService interface
+ * - ISP: Implements only the necessary interface
+ * - DIP: Depends on abstractions (ProductRepository)
  *
- * @author MercadoClone Team
+ * @author Wagner Costa
  */
 @Service
 public class ProductService implements ProductUseCase {
@@ -161,14 +161,14 @@ public class ProductService implements ProductUseCase {
     }
 
     /**
-     * Valida o ID do produto.
+     * Validates the product ID.
      */
     private void validateProductId(String productId) {
         validateNonBlankString(productId, "Product ID");
     }
 
     /**
-     * Valida se a string não é nula ou vazia.
+     * Validates if the string is not null or empty.
      */
     private void validateNonBlankString(String value, String fieldName) {
         if (!org.springframework.util.StringUtils.hasText(value)) {
@@ -177,7 +177,7 @@ public class ProductService implements ProductUseCase {
     }
 
     /**
-     * Valida a faixa de preços.
+     * Validates the price range.
      */
     private void validatePriceRange(Double minPrice, Double maxPrice) {
         if (minPrice == null || maxPrice == null) {

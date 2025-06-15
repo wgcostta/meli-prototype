@@ -1,5 +1,5 @@
 /**
- * Interceptor para logging de requisições HTTP usando SLF4J.
+ * Interceptor for HTTP request logging using SLF4J.
  */
 package com.mercadoclone.config;
 
@@ -14,7 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 /**
- * Interceptor para logging automático de requisições HTTP.
+ * Interceptor for automatic logging of HTTP requests.
  */
 @Component
 public class LoggingInterceptor implements HandlerInterceptor {
@@ -25,15 +25,15 @@ public class LoggingInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        // Gera ID único para a requisição
+        // Generate unique ID for the request
         String requestId = UUID.randomUUID().toString().substring(0, 8);
         long startTime = System.currentTimeMillis();
 
-        // Adiciona ao MDC para correlação de logs
+        // Add to MDC for log correlation
         MDC.put(REQUEST_ID_KEY, requestId);
         MDC.put(START_TIME_KEY, String.valueOf(startTime));
 
-        // Log da requisição entrante
+        // Log incoming request
         logger.info("🔄 HTTP {} {} from {} | User-Agent: {}",
                 request.getMethod(),
                 request.getRequestURI(),
@@ -72,7 +72,7 @@ public class LoggingInterceptor implements HandlerInterceptor {
             }
 
         } finally {
-            // Limpa o MDC
+            // Clear MDC
             MDC.clear();
         }
     }

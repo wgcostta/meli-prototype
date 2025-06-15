@@ -12,8 +12,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.Arrays;
 
 /**
- * Configuração CORS para permitir requisições do frontend em todos os ambientes.
- * Configuração que funciona tanto em desenvolvimento quanto em produção.
+ * CORS configuration to allow frontend requests in all environments.
+ * Configuration that works both in development and production.
  *
  * @author MercadoClone Team
  */
@@ -28,7 +28,7 @@ public class CorsConfig implements WebMvcConfigurer {
         CorsConfiguration configuration = new CorsConfiguration();
 
         if ("prod".equals(activeProfile)) {
-            // Produção: URLs específicas (sem wildcard)
+            // Production: specific URLs (without wildcard)
             configuration.setAllowedOrigins(Arrays.asList(
                     "https://seu-frontend.netlify.app",
                     "https://seu-frontend.vercel.app",
@@ -36,7 +36,7 @@ public class CorsConfig implements WebMvcConfigurer {
                     "https://meli-prototype-qpwg8zdib-wagner-oliveira-da-costas-projects.vercel.app"
             ));
         } else {
-            // Desenvolvimento e Teste: patterns específicos (sem *)
+            // Development and Test: specific patterns (without *)
             configuration.setAllowedOriginPatterns(Arrays.asList(
                     "http://localhost:[*]",
                     "http://127.0.0.1:[*]",
@@ -53,18 +53,18 @@ public class CorsConfig implements WebMvcConfigurer {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/api/**", configuration);
 
-        // Configuração separada para endpoints que não precisam de credenciais
+        // Separate configuration for endpoints that don't need credentials
         CorsConfiguration publicConfiguration = new CorsConfiguration();
         publicConfiguration.setAllowedOriginPatterns(Arrays.asList("*"));
         publicConfiguration.setAllowedMethods(Arrays.asList("GET", "OPTIONS"));
         publicConfiguration.setAllowedHeaders(Arrays.asList("*"));
-        publicConfiguration.setAllowCredentials(false); // SEM credenciais
+        publicConfiguration.setAllowCredentials(false); // NO credentials
         publicConfiguration.setMaxAge(3600L);
 
         source.registerCorsConfiguration("/actuator/health", publicConfiguration);
         source.registerCorsConfiguration("/actuator/**", publicConfiguration);
 
-        // Swagger apenas em não-produção
+        // Swagger only in non-production
         if (!"prod".equals(activeProfile)) {
             source.registerCorsConfiguration("/swagger-ui/**", publicConfiguration);
             source.registerCorsConfiguration("/v3/api-docs/**", publicConfiguration);

@@ -1,8 +1,8 @@
 package com.mercadoclone.controller;
 
 import com.mercadoclone.domain.entity.ProductEntity;
-import com.mercadoclone.dto.request.FilterRequest;
 import com.mercadoclone.dto.mapper.ProductMapper;
+import com.mercadoclone.dto.request.FilterRequest;
 import com.mercadoclone.dto.response.ApiResponse;
 import com.mercadoclone.dto.response.ProductResponse;
 import com.mercadoclone.service.ProductUseCase;
@@ -18,22 +18,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.util.List;
 
-/**
- * Controller REST para operações relacionadas a produtos.
- *
- * Seguindo os princípios SOLID:
- * - SRP: Responsável apenas pela camada de apresentação de produtos
- * - OCP: Pode ser estendido sem modificação
- * - DIP: Depende de abstrações (ProductService)
- *
- * @author MercadoClone Team
- */
 @RestController
 @RequestMapping("/api/v1/products")
-@Tag(name = "Products", description = "API para gerenciamento de produtos")
+@Tag(name = "Products", description = "API for product management")
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class ProductController {
 
@@ -49,27 +38,27 @@ public class ProductController {
     }
 
     @Operation(
-            summary = "Buscar produto por ID",
-            description = "Retorna os detalhes de um produto específico baseado em seu ID único"
+            summary = "Find product by ID",
+            description = "Returns details of a specific product based on its unique ID"
     )
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200",
-                    description = "Produto encontrado com sucesso",
+                    description = "Product found successfully",
                     content = @Content(schema = @Schema(implementation = ApiResponse.class))
             ),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "404",
-                    description = "Produto não encontrado"
+                    description = "Product not found"
             ),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "400",
-                    description = "ID do produto inválido"
+                    description = "Invalid product ID"
             )
     })
     @GetMapping("/{productId}")
     public ResponseEntity<ApiResponse<ProductResponse>> findById(
-            @Parameter(description = "ID único do produto", required = true)
+            @Parameter(description = "Unique product ID", required = true)
             @PathVariable @NotBlank String productId) {
 
         logger.info("REST request to get product by ID: {}", productId);
@@ -83,28 +72,28 @@ public class ProductController {
     }
 
     @Operation(
-            summary = "Listar todos os produtos",
-            description = "Retorna uma lista com todos os produtos disponíveis",
+            summary = "List all products",
+            description = "Returns a list with all available products",
             parameters = {
-                    @Parameter(name = "categoryId", description = "ID da categoria para filtrar produtos"),
-                    @Parameter(name = "brandId", description = "ID da marca para filtrar produtos"),
-                    @Parameter(name = "value", description = "Valor de pesquisa para filtrar produtos"),
-                    @Parameter(name = "available", description = "Filtrar apenas produtos disponíveis"),
-                    @Parameter(name = "discounted", description = "Filtrar apenas produtos com desconto"),
-                    @Parameter(name = "rangePrice", description = "Filtrar produtos por faixa de preço"),
-                    @Parameter(name = "minPrice", description = "Preço mínimo para filtro de faixa de preço"),
-                    @Parameter(name = "maxPrice", description = "Preço máximo para filtro de faixa de preço")
+                    @Parameter(name = "categoryId", description = "Category ID to filter products"),
+                    @Parameter(name = "brandId", description = "Brand ID to filter products"),
+                    @Parameter(name = "value", description = "Search value to filter products"),
+                    @Parameter(name = "available", description = "Filter only available products"),
+                    @Parameter(name = "discounted", description = "Filter only discounted products"),
+                    @Parameter(name = "rangePrice", description = "Filter products by price range"),
+                    @Parameter(name = "minPrice", description = "Minimum price for price range filter"),
+                    @Parameter(name = "maxPrice", description = "Maximum price for price range filter")
             }
     )
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200",
-                    description = "Lista de produtos retornada com sucesso"
+                    description = "Product list returned successfully"
             )
     })
     @GetMapping
     public ResponseEntity<ApiResponse<List<ProductResponse>>> findAll(
-         @Parameter(hidden = true) FilterRequest filterRequest
+            @Parameter(hidden = true) FilterRequest filterRequest
     ) {
         logger.info("REST request to get all products");
 
@@ -117,12 +106,12 @@ public class ProductController {
     }
 
     @Operation(
-            summary = "Verificar se produto existe",
-            description = "Verifica se um produto existe baseado em seu ID"
+            summary = "Check if product exists",
+            description = "Verifies if a product exists based on its ID"
     )
     @GetMapping("/{productId}/exists")
     public ResponseEntity<ApiResponse<Boolean>> productExists(
-            @Parameter(description = "ID único do produto", required = true)
+            @Parameter(description = "Unique product ID", required = true)
             @PathVariable @NotBlank String productId) {
 
         logger.info("REST request to check if product exists: {}", productId);
@@ -134,8 +123,8 @@ public class ProductController {
     }
 
     @Operation(
-            summary = "Contar total de produtos",
-            description = "Retorna o número total de produtos cadastrados"
+            summary = "Count total products",
+            description = "Returns the total number of registered products"
     )
     @GetMapping("/count")
     public ResponseEntity<ApiResponse<Long>> getTotalProductCount() {

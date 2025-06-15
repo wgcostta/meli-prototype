@@ -2,11 +2,7 @@ package com.mercadoclone.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public
-/**
- * Entidade que representa informações de frete.
- */
-class ShippingEntity {
+public class ShippingEntity {
     private Boolean free;
 
     @JsonProperty("estimatedDays")
@@ -24,7 +20,6 @@ class ShippingEntity {
         this.description = description;
     }
 
-    // Getters and Setters
     public Boolean getFree() { return free; }
     public void setFree(Boolean free) { this.free = free; }
 
@@ -37,9 +32,6 @@ class ShippingEntity {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    /**
-     * Verifica se o frete é expresso (entrega em até 2 dias).
-     */
     public boolean isExpress() {
         return estimatedDays != null && estimatedDays <= 2;
     }

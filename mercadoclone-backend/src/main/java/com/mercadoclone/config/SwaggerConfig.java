@@ -1,5 +1,5 @@
 /**
- * Configuração do Swagger/OpenAPI para documentação da API.
+ * Swagger/OpenAPI configuration for API documentation.
  */
 package com.mercadoclone.config;
 
@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Configuração do OpenAPI/Swagger para documentação da API.
+ * OpenAPI/Swagger configuration for API documentation.
  */
 @Configuration
 public class SwaggerConfig {
@@ -25,11 +25,11 @@ public class SwaggerConfig {
         return new OpenAPI()
                 .info(new Info()
                         .title("MercadoClone API")
-                        .description("API REST para clone do Mercado Livre")
+                        .description("REST API for Mercado Livre clone")
                         .version("1.0.0")
                         .contact(new Contact()
-                                .name("MercadoClone Team")
-                                .email("team@mercadoclone.com")
+                                .name("MercadoClone Team Case")
+                                .email("wg.o.costa@gmail.com")
                                 .url("https://meli-prototype-qpwg8zdib-wagner-oliveira-da-costas-projects.vercel.app"))
                         .license(new License()
                                 .name("MIT License")
