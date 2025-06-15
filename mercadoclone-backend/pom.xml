@@ -244,6 +244,15 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.11</version>
+				<configuration>
+					<excludes>
+						<exclude>**/MeliCloneApplication.class</exclude>
+
+						<exclude>**/config/**</exclude>
+						<exclude>**/exception/**</exclude>
+
+					</excludes>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
