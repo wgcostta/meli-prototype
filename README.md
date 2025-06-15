@@ -4,9 +4,9 @@ A full-stack application that replicates MercadoLibre's product detail page, bui
 
 ## 🌐 Live Demo
 
-- **Frontend Application**: [https://meli-prototype-git-main-wagner-oliveira-da-costas-projects.vercel.app](https://your-frontend-url.vercel.app)
-- **Backend API**: [https://meli-backend-33b27898349d.herokuapp.com](https://your-backend-url.herokuapp.com)
-- **API Documentation**: [https://meli-backend-33b27898349d.herokuapp.com/swagger-ui/index.html#](https://your-backend-url.herokuapp.com/swagger-ui.html)
+- **Frontend Application**: [https://meli-prototype-git-main-wagner-oliveira-da-costas-projects.vercel.app](https://meli-prototype-git-main-wagner-oliveira-da-costas-projects.vercel.app)
+- **Backend API**: [https://meli-backend-33b27898349d.herokuapp.com](https://meli-backend-33b27898349d.herokuapp.com)
+- **API Documentation**: [https://meli-backend-33b27898349d.herokuapp.com/swagger-ui/index.html#](https://meli-backend-33b27898349d.herokuapp.com/swagger-ui/index.html#)
 
 ## 🏗️ Project Structure
 
