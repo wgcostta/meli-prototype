@@ -27,28 +27,26 @@ export default function ProductGallery({ product }: ProductGalleryProps) {
     );
   }
 
-  // Usar as imagens do produto ordenadas
-  const images = product.images
-    .sort((a, b) => a.order - b.order)
-    .map(img => img.url);
+  // Sort images by order
+  const sortedImages = product.images.sort((a, b) => a.order - b.order);
 
   const nextImage = () => {
-    setSelectedImage((prev) => (prev + 1) % images.length);
+    setSelectedImage((prev) => (prev + 1) % sortedImages.length);
   };
 
   const prevImage = () => {
-    setSelectedImage((prev) => (prev - 1 + images.length) % images.length);
+    setSelectedImage((prev) => (prev - 1 + sortedImages.length) % sortedImages.length);
   };
 
   return (
     <div className="lg:col-span-2">
       <div className="bg-white rounded-lg p-6 shadow-sm">
         <div className="flex gap-4">
-          {/* Miniaturas Verticais */}
+          {/* Vertical Thumbnails */}
           <div className="flex flex-col space-y-2 max-h-96 overflow-y-auto">
-            {images.map((img, index) => (
+            {sortedImages.map((img, index) => (
               <button
-                key={product.images[index]?.id || index}
+                key={img.id} // Use unique image id as key
                 onClick={() => setSelectedImage(index)}
                 className={`flex-shrink-0 w-16 h-16 rounded border-2 overflow-hidden transition-all ${
                   selectedImage === index 
@@ -57,25 +55,25 @@ export default function ProductGallery({ product }: ProductGalleryProps) {
                 }`}
               >
                 <img 
-                  src={img} 
-                  alt={product.images[index]?.alt || `${product.title} ${index + 1}`} 
+                  src={img.url} 
+                  alt={img.alt || `${product.title} ${index + 1}`} 
                   className="w-full h-full object-cover" 
                 />
               </button>
             ))}
           </div>
 
-          {/* Imagem Principal */}
+          {/* Main Image */}
           <div className="relative flex-1 group" data-testid="main-image-container">
             <div className="flex items-center justify-center bg-gray-50 rounded-lg min-h-[400px] max-h-[600px]">
               <img 
-                src={images[selectedImage]} 
-                alt={product.images[selectedImage]?.alt || product.title}
+                src={sortedImages[selectedImage].url} 
+                alt={sortedImages[selectedImage].alt || product.title}
                 className="max-w-full max-h-[600px] object-contain rounded-lg cursor-zoom-in"
               />
             </div>
             
-            {/* Controles de navegação */}
+            {/* Navigation Controls */}
             <button 
               onClick={prevImage}
               className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-50"
@@ -92,7 +90,7 @@ export default function ProductGallery({ product }: ProductGalleryProps) {
               <ChevronRight size={20} data-testid="chevron-right-icon" />
             </button>
             
-            {/* Botão de zoom */}
+            {/* Zoom Button */}
             <button 
               className="absolute top-4 right-4 bg-white p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-50"
               aria-label="Zoom image"
@@ -100,9 +98,9 @@ export default function ProductGallery({ product }: ProductGalleryProps) {
               <ZoomIn size={20} data-testid="zoom-icon" />
             </button>
             
-            {/* Indicador de posição */}
+            {/* Position Indicator */}
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm">
-              {selectedImage + 1} / {images.length}
+              {selectedImage + 1} / {sortedImages.length}
             </div>
           </div>
         </div>

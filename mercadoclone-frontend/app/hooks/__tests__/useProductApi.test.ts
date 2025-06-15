@@ -227,7 +227,7 @@ describe('useProductApi', () => {
     })
 
     expect(mockFetch).toHaveBeenCalledWith(
-      '/api/v1/products/product-1',
+      'http://localhost:3001/api/v1/products/product-1',
       expect.any(Object)
     )
 
@@ -236,7 +236,7 @@ describe('useProductApi', () => {
 
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalledWith(
-        '/api/v1/products/product-2',
+        'http://localhost:3001/api/v1/products/product-2',
         expect.any(Object)
       )
     })
