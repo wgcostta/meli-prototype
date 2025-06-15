@@ -10,6 +10,11 @@ Este guia explica como executar a aplicação completa usando Docker ou individu
 
 ## 🚀 Execução Completa com Docker Compose
 
+### Copiar o arquivo .env.local para a pasta mercadoclone-frontend
+```shell
+cp .env.local ~/workspace/meli-prototype/mercadoclone-frontend/
+```
+
 ### Executar toda a aplicação
 ```bash
 # Subir todos os serviços

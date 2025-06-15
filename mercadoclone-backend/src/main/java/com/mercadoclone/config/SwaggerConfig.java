@@ -30,7 +30,7 @@ public class SwaggerConfig {
                         .contact(new Contact()
                                 .name("MercadoClone Team Case")
                                 .email("wg.o.costa@gmail.com")
-                                .url("https://meli-prototype-qpwg8zdib-wagner-oliveira-da-costas-projects.vercel.app"))
+                                .url("https://meli-prototype-git-main-wagner-oliveira-da-costas-projects.vercel.app"))
                         .license(new License()
                                 .name("MIT License")
                                 .url("https://opensource.org/licenses/MIT")));

@@ -110,6 +110,11 @@ After successful execution:
 
 ## 🔍 Useful Debug Commands
 
+### Copy the .env.local file to the mercadoclone-frontend folder
+```shell
+cp .env.local ~/workspace/meli-prototype/mercadoclone-frontend/
+```
+
 ### View running containers
 ```bash
 docker ps
