@@ -1,29 +1,22 @@
-/**
- * Exemplo completo de CucumberTestRunner funcionando.
- */
-package com.mercadoclone.bdd;
-
-import io.cucumber.junit.Cucumber;
-import io.cucumber.junit.CucumberOptions;
-import org.junit.runner.RunWith;
-
-/**
- * Runner principal para testes BDD com Cucumber.
- * Esta versão é totalmente compatível e testada.
- */
-@RunWith(Cucumber.class)
-@CucumberOptions(
-        features = "classpath:features",           // Localização dos arquivos .feature
-        glue = "com.mercadoclone.bdd",            // Pacote com step definitions
-        plugin = {
-                "pretty",                              // Output formatado no console
-                "html:target/cucumber-reports",        // Relatório HTML
-                "json:target/cucumber-reports/Cucumber.json",  // Relatório JSON
-                "junit:target/cucumber-reports/Cucumber.xml"   // Relatório XML
-        },
-        tags = "not @ignore",                     // Executa todos exceto @ignore
-        dryRun = false                            // false = executa testes reais
-)
-public class CucumberTestRunner {
-
-}
+//package com.mercadoclone.bdd;
+//
+//import org.junit.platform.suite.api.ConfigurationParameter;
+//import org.junit.platform.suite.api.IncludeEngines;
+//import org.junit.platform.suite.api.SelectClasspathResource;
+//import org.junit.platform.suite.api.Suite;
+//import org.junit.platform.suite.api.SuiteDisplayName;
+//
+//import static io.cucumber.junit.platform.engine.Constants.*;
+//
+//@Suite
+//@SuiteDisplayName("Cucumber BDD Tests")
+//@IncludeEngines("cucumber")
+//@SelectClasspathResource("features")
+//@ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "com.mercadoclone.bdd")
+//@ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "pretty, html:target/cucumber-html-reports, json:target/cucumber-json-reports/Cucumber.json, junit:target/cucumber-junit-reports/Cucumber.xml")
+//@ConfigurationParameter(key = FILTER_TAGS_PROPERTY_NAME, value = "not @ignore")
+//@ConfigurationParameter(key = EXECUTION_DRY_RUN_PROPERTY_NAME, value = "false")
+////@ConfigurationParameter(key = EXECUTION_STRICT_PROPERTY_NAME, value = "true")
+//@ConfigurationParameter(key = PLUGIN_PUBLISH_QUIET_PROPERTY_NAME, value = "true")
+//public class CucumberTestRunner {
+//}
