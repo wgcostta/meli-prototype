@@ -1,4 +1,4 @@
-Feature: BDD - Cenários de Erro da API de Produtos
+Feature: Cenários de Erro da API de Produtos
   Como um usuário da API
   Eu quero que a API trate erros adequadamente
   Para ter uma experiência consistente e previsível
@@ -49,13 +49,13 @@ Feature: BDD - Cenários de Erro da API de Produtos
 
   Scenario: Validação de parâmetro available com valor inválido
     When eu faço uma requisição GET para "/api/v1/products" com parâmetro "available" igual a "invalid"
-    Then o status da resposta deve ser 200
-    And o campo "success" deve ser true
+    Then o status da resposta deve ser 400
+    And a resposta deve conter uma mensagem de erro
 
   Scenario: Validação de parâmetro discounted com valor inválido
     When eu faço uma requisição GET para "/api/v1/products" com parâmetro "discounted" igual a "not_boolean"
-    Then o status da resposta deve ser 200
-    And o campo "success" deve ser true
+    Then o status da resposta deve ser 400
+    And a resposta deve conter uma mensagem de erro
 
   Scenario: Tratamento gracioso de múltiplos filtros
     When eu faço uma requisição GET para "/api/v1/products?categoryId=cat1&brandId=brand1&available=true"
