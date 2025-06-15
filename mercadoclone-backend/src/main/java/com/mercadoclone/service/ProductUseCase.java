@@ -1,6 +1,8 @@
 package com.mercadoclone.service;
 
 import com.mercadoclone.domain.entity.ProductEntity;
+import com.mercadoclone.dto.request.FilterRequest;
+
 import java.util.List;
 
 /**
@@ -28,7 +30,7 @@ public interface ProductUseCase {
      *
      * @return lista de todos os produtos
      */
-    List<ProductEntity> findAll(String categoryId, String brandId, String value, Boolean available, Boolean discounted, Double minPrice, Double maxPrice, Boolean rangePrice);
+    List<ProductEntity> findAll(FilterRequest filterRequest);
 
     /**
      * Busca produtos por categoria.

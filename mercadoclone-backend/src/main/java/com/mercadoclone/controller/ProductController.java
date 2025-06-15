@@ -1,6 +1,7 @@
 package com.mercadoclone.controller;
 
 import com.mercadoclone.domain.entity.ProductEntity;
+import com.mercadoclone.dto.request.FilterRequest;
 import com.mercadoclone.dto.mapper.ProductMapper;
 import com.mercadoclone.dto.response.ApiResponse;
 import com.mercadoclone.dto.response.ProductResponse;
@@ -83,7 +84,17 @@ public class ProductController {
 
     @Operation(
             summary = "Listar todos os produtos",
-            description = "Retorna uma lista com todos os produtos disponíveis"
+            description = "Retorna uma lista com todos os produtos disponíveis",
+            parameters = {
+                    @Parameter(name = "categoryId", description = "ID da categoria para filtrar produtos"),
+                    @Parameter(name = "brandId", description = "ID da marca para filtrar produtos"),
+                    @Parameter(name = "value", description = "Valor de pesquisa para filtrar produtos"),
+                    @Parameter(name = "available", description = "Filtrar apenas produtos disponíveis"),
+                    @Parameter(name = "discounted", description = "Filtrar apenas produtos com desconto"),
+                    @Parameter(name = "rangePrice", description = "Filtrar produtos por faixa de preço"),
+                    @Parameter(name = "minPrice", description = "Preço mínimo para filtro de faixa de preço"),
+                    @Parameter(name = "maxPrice", description = "Preço máximo para filtro de faixa de preço")
+            }
     )
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -93,35 +104,11 @@ public class ProductController {
     })
     @GetMapping
     public ResponseEntity<ApiResponse<List<ProductResponse>>> findAll(
-            @Parameter(description = "category id")
-            @RequestParam(required = false) String categoryId,
-            @Parameter(description = "brand id")
-            @RequestParam(required = false) String brandId,
-            @Parameter(description = "Value from search")
-            @RequestParam(required = false) String value,
-            @Parameter(description = "Available products")
-            @RequestParam (required = false) Boolean available,
-            @Parameter(description = "Discounted products")
-            @RequestParam(required = false) Boolean discounted,
-            @Parameter(description = "Range price")
-            @RequestParam(required = false) Boolean rangePrice,
-            @Parameter(description = "Minimum price")
-            @RequestParam(defaultValue = "0", required = false) Double minPrice,
-            @Parameter(description = "Maximum price")
-            @RequestParam(defaultValue = "0", required = false) Double maxPrice
+         @Parameter(hidden = true) FilterRequest filterRequest
     ) {
         logger.info("REST request to get all products");
 
-        List<ProductEntity> products = productService.findAll(
-                categoryId,
-                brandId,
-                value,
-                available,
-                discounted,
-                minPrice,
-                maxPrice,
-                rangePrice
-        );
+        List<ProductEntity> products = productService.findAll(filterRequest);
 
         List<ProductResponse> productResponses = productMapper.toResponseList(products);
 

@@ -2,6 +2,7 @@ package com.mercadoclone.service;
 
 import com.mercadoclone.domain.entity.ProductEntity;
 import com.mercadoclone.domain.repository.ProductRepository;
+import com.mercadoclone.dto.request.FilterRequest;
 import com.mercadoclone.exception.ProductNotFoundException;
 import io.micrometer.common.util.StringUtils;
 import org.slf4j.Logger;
@@ -44,26 +45,26 @@ public class ProductService implements ProductUseCase {
     }
 
     @Override
-    public List<ProductEntity> findAll(String categoryId, String brandId, String value, Boolean available, Boolean discounted, Double minPrice, Double maxPrice, Boolean rangePrice) {
+    public List<ProductEntity> findAll(FilterRequest filter) {
         logger.info("Getting all products");
 
-        if(StringUtils.isNotBlank(categoryId))
-            return getProductsByCategory(categoryId);
+        if(StringUtils.isNotBlank(filter.categoryId()))
+            return getProductsByCategory(filter.categoryId());
 
-        if(StringUtils.isNotBlank(brandId))
-            return getProductsByBrand(brandId);
+        if(StringUtils.isNotBlank(filter.brandId()))
+            return getProductsByBrand(filter.brandId());
 
-        if(StringUtils.isNotBlank(value))
-            return searchProducts(value);
+        if(StringUtils.isNotBlank(filter.value()))
+            return searchProducts(filter.value());
 
-        if(available != null && available)
+        if(filter.available() != null && filter.available())
             return getAvailableProducts();
 
-        if(discounted != null && discounted)
+        if(filter.discounted() != null && filter.discounted())
             return getProductsWithDiscount();
 
-        if(rangePrice != null && rangePrice )
-            return getProductsByPriceRange(minPrice, maxPrice);
+        if(filter.rangePrice() != null && filter.rangePrice() )
+            return getProductsByPriceRange(filter.minPrice(), filter.maxPrice());
 
         List<ProductEntity> products = productRepository.findAll();
 

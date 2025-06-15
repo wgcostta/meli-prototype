@@ -86,16 +86,7 @@ class ProductControllerTest {
                 new ProductEntity("product-002", "Product 2", "Description 2")
         );
 
-        when(productService.findAll(
-                ArgumentMatchers.any(),
-                ArgumentMatchers.any(),
-                ArgumentMatchers.any(),
-                ArgumentMatchers.any(),
-                ArgumentMatchers.any(),
-                ArgumentMatchers.any(),
-                ArgumentMatchers.any(),
-                ArgumentMatchers.any())
-        ).thenReturn(products);
+        when(productService.findAll(ArgumentMatchers.any())).thenReturn(products);
 
         // Mock the mapper to return a list of DTOs
         List<ProductResponse> responseList = productMapperInstance.toResponseList(products);
@@ -113,15 +104,7 @@ class ProductControllerTest {
     @Test
     @DisplayName("Should return 400 for invalid price range")
     void shouldReturn400ForInvalidPriceRange() throws Exception {
-        when(productService.findAll(ArgumentMatchers.any(),
-                ArgumentMatchers.any(),
-                ArgumentMatchers.any(),
-                ArgumentMatchers.any(),
-                ArgumentMatchers.any(),
-                ArgumentMatchers.any(),
-                ArgumentMatchers.any(),
-                ArgumentMatchers.any()
-               ))
+        when(productService.findAll(ArgumentMatchers.any()))
                 .thenThrow(new IllegalArgumentException("Invalid price range"));
 
         // When & Then

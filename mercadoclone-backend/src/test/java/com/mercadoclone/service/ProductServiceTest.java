@@ -6,6 +6,7 @@ package com.mercadoclone.service;
 import com.mercadoclone.domain.entity.CategoryEntity;
 import com.mercadoclone.domain.entity.ProductEntity;
 import com.mercadoclone.domain.repository.ProductRepository;
+import com.mercadoclone.dto.request.FilterRequest;
 import com.mercadoclone.exception.ProductNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Filter;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -101,9 +103,9 @@ class ProductServiceTest {
         when(productRepository.findAll()).thenReturn(expectedProducts);
 
         // When
-        List<ProductEntity> result = productService.findAll(
-                null, null, null, null, null, null, null, null
-        );
+        List<ProductEntity> result = productService.findAll(new FilterRequest(
+                 null, null, null, null, null, null, null, null
+        ));
 
         // Then
         assertThat(result).hasSize(2);
