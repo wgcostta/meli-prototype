@@ -3,10 +3,10 @@ package com.mercadoclone.service;
 import com.mercadoclone.domain.entity.ProductEntity;
 import com.mercadoclone.domain.repository.ProductRepository;
 import com.mercadoclone.exception.ProductNotFoundException;
+import io.micrometer.common.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class ProductService implements ProductUseCase {
     }
 
     @Override
-    public ProductEntity getProductById(String productId) {
+    public ProductEntity findById(String productId) {
         logger.info("Getting product by ID: {}", productId);
 
         validateProductId(productId);
@@ -44,10 +44,29 @@ public class ProductService implements ProductUseCase {
     }
 
     @Override
-    public List<ProductEntity> getAllProducts() {
+    public List<ProductEntity> findAll(String categoryId, String brandId, String value, Boolean available, Boolean discounted, Double minPrice, Double maxPrice, Boolean rangePrice) {
         logger.info("Getting all products");
 
+        if(StringUtils.isNotBlank(categoryId))
+            return getProductsByCategory(categoryId);
+
+        if(StringUtils.isNotBlank(brandId))
+            return getProductsByBrand(brandId);
+
+        if(StringUtils.isNotBlank(value))
+            return searchProducts(value);
+
+        if(available != null && available)
+            return getAvailableProducts();
+
+        if(discounted != null && discounted)
+            return getProductsWithDiscount();
+
+        if(rangePrice != null && rangePrice )
+            return getProductsByPriceRange(minPrice, maxPrice);
+
         List<ProductEntity> products = productRepository.findAll();
+
         logger.debug("Found {} products", products.size());
 
         return products;
@@ -151,7 +170,7 @@ public class ProductService implements ProductUseCase {
      * Valida se a string não é nula ou vazia.
      */
     private void validateNonBlankString(String value, String fieldName) {
-        if (!StringUtils.hasText(value)) {
+        if (!org.springframework.util.StringUtils.hasText(value)) {
             throw new IllegalArgumentException(fieldName + " cannot be null or blank");
         }
     }

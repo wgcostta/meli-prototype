@@ -232,9 +232,9 @@ class JsonProductRepositoryTest {
             List<ProductEntity> result = repository.findAvailableProducts();
 
             // Then
-            assertThat(result).hasSize(2);
+            assertThat(result).hasSize(3);
             assertThat(result).extracting(ProductEntity::getId)
-                    .containsExactlyInAnyOrder("1", "2");
+                    .containsExactlyInAnyOrder("1", "2", "3");
         }
 
         @Test
@@ -245,7 +245,7 @@ class JsonProductRepositoryTest {
 
             // Then
             assertThat(result).hasSize(1);
-            assertThat(result.get(0).getId()).isEqualTo("1");
+            assertThat(result.get(0).getId()).isEqualTo("3");
         }
 
         @Test
@@ -412,7 +412,8 @@ class JsonProductRepositoryTest {
 
             // Then
             assertThat(repository.getCacheSize()).isEqualTo(mockProducts.size());
-            verify(objectMapper, times(2)).readValue(any(InputStream.class), any(TypeReference.class));
+            verify(objectMapper, times(1))
+                    .readValue(any(InputStream.class), any(TypeReference.class));
         }
     }
 
@@ -433,17 +434,17 @@ class JsonProductRepositoryTest {
     private List<ProductEntity> createMockProducts() {
         return Arrays.asList(
                 createProduct("1", "Smartphone Samsung", "electronics", "Samsung",
-                        1200.0, 1000.0, true, "Smartphone avançado"),
+                        1200.0, 1000.0, 0, "Smartphone avançado"),
                 createProduct("2", "Notebook Dell", "electronics", "Dell",
-                        1500.0, null, true, "Notebook para trabalho"),
+                        1500.0, null, 0, "Notebook para trabalho"),
                 createProduct("3", "Mesa de Escritório", "furniture", "IKEA",
-                        300.0, null, false, "Mesa moderna")
+                        300.0, null, 1, "Mesa moderna")
         );
     }
 
     private ProductEntity createProduct(String id, String title, String categoryId,
                                         String brand, Double originalPrice, Double currentPrice,
-                                        boolean available, String description) {
+                                        Integer discount, String description) {
         ProductEntity product = new ProductEntity();
         product.setId(id);
         product.setTitle(title);
@@ -457,12 +458,13 @@ class JsonProductRepositoryTest {
         price.setOriginal(originalPrice);
         price.setCurrent(currentPrice != null ? currentPrice : originalPrice);
         product.setPrice(price);
+        price.setDiscount(discount);
 
         return product;
     }
 
     private ProductEntity createProductWithImages(String imageUrl) {
-        ProductEntity product = createProduct("1", "Test Product", "test", "Test", 100.0, null, true, "Test");
+        ProductEntity product = createProduct("1", "Test Product", "test", "Test", 100.0, null, 0, "Test");
         ProductImageEntity image = new ProductImageEntity();
         image.setUrl(imageUrl);
         product.setImages(Arrays.asList(image));

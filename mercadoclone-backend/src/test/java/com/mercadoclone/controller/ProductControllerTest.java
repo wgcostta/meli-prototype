@@ -9,6 +9,7 @@ import com.mercadoclone.service.ProductUseCase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
+import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -46,7 +47,7 @@ class ProductControllerTest {
     void shouldReturnProductSuccessfullyWhenValidIdProvided() throws Exception {
         // Given
         ProductEntity product = new ProductEntity("product-001", "Test Product", "Test Description");
-        when(productService.getProductById("product-001")).thenReturn(product);
+        when(productService.findById("product-001")).thenReturn(product);
 
         // Mock the mapper to return a DTO
         ProductResponse response = productMapperInstance.toResponse(product);
@@ -66,7 +67,7 @@ class ProductControllerTest {
     @DisplayName("Should return 404 when product not found")
     void shouldReturn404WhenProductNotFound() throws Exception {
         // Given
-        when(productService.getProductById("non-existent"))
+        when(productService.findById("non-existent"))
                 .thenThrow(new ProductNotFoundException("Product not found with ID: non-existent"));
 
         // When & Then
@@ -85,7 +86,16 @@ class ProductControllerTest {
                 new ProductEntity("product-002", "Product 2", "Description 2")
         );
 
-        when(productService.getAllProducts()).thenReturn(products);
+        when(productService.findAll(
+                ArgumentMatchers.any(),
+                ArgumentMatchers.any(),
+                ArgumentMatchers.any(),
+                ArgumentMatchers.any(),
+                ArgumentMatchers.any(),
+                ArgumentMatchers.any(),
+                ArgumentMatchers.any(),
+                ArgumentMatchers.any())
+        ).thenReturn(products);
 
         // Mock the mapper to return a list of DTOs
         List<ProductResponse> responseList = productMapperInstance.toResponseList(products);
@@ -107,7 +117,8 @@ class ProductControllerTest {
                 .thenThrow(new IllegalArgumentException("Invalid price range"));
 
         // When & Then
-        mockMvc.perform(get("/api/v1/products/price-range")
+        mockMvc.perform(get("/api/v1/products")
+                        .param("rangePrice", "true")
                         .param("minPrice", "200")
                         .param("maxPrice", "100"))
                 .andExpect(status().isBadRequest())
@@ -121,7 +132,8 @@ class ProductControllerTest {
         when(productService.searchProducts("nonexistent")).thenReturn(Arrays.asList());
 
         // When & Then
-        mockMvc.perform(get("/api/v1/products/search").param("q", "nonexistent"))
+        mockMvc.perform(get("/api/v1/products")
+                        .param("q", "nonexistent"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success", is(true)))
                 .andExpect(jsonPath("$.data", hasSize(0)));

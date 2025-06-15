@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.PositiveOrZero;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -68,13 +67,13 @@ public class ProductController {
             )
     })
     @GetMapping("/{productId}")
-    public ResponseEntity<ApiResponse<ProductResponse>> getProductById(
+    public ResponseEntity<ApiResponse<ProductResponse>> findById(
             @Parameter(description = "ID único do produto", required = true)
             @PathVariable @NotBlank String productId) {
 
         logger.info("REST request to get product by ID: {}", productId);
 
-        ProductEntity product = productService.getProductById(productId);
+        ProductEntity product = productService.findById(productId);
 
         ProductResponse response = productMapper.toResponse(product);
 
@@ -93,125 +92,40 @@ public class ProductController {
             )
     })
     @GetMapping
-    public ResponseEntity<ApiResponse<List<ProductResponse>>> getAllProducts() {
+    public ResponseEntity<ApiResponse<List<ProductResponse>>> findAll(
+            @Parameter(description = "category id")
+            @RequestParam String categoryId,
+            @Parameter(description = "brand id")
+            @RequestParam String brandId,
+            @Parameter(description = "Value from search")
+            @RequestParam String value,
+            @Parameter(description = "Available products")
+            @RequestParam Boolean available,
+            @Parameter(description = "Discounted products")
+            @RequestParam Boolean discounted,
+            @Parameter(description = "Range price")
+            @RequestParam Boolean rangePrice,
+            @Parameter(description = "Minimum price")
+            @RequestParam(defaultValue = "0") Double minPrice,
+            @Parameter(description = "Maximum price")
+            @RequestParam(defaultValue = "0") Double maxPrice
+    ) {
         logger.info("REST request to get all products");
 
-        List<ProductEntity> products = productService.getAllProducts();
+        List<ProductEntity> products = productService.findAll(
+                categoryId,
+                brandId,
+                value,
+                available,
+                discounted,
+                minPrice,
+                maxPrice,
+                rangePrice
+        );
 
         List<ProductResponse> productResponses = productMapper.toResponseList(products);
 
         logger.debug("Successfully retrieved {} products", products.size());
-        return ResponseEntity.ok(ApiResponse.success(productResponses));
-    }
-
-    @Operation(
-            summary = "Buscar produtos por categoria",
-            description = "Retorna uma lista de produtos filtrados por categoria"
-    )
-    @GetMapping("/category/{categoryId}")
-    public ResponseEntity<ApiResponse<List<ProductResponse>>> getProductsByCategory(
-            @Parameter(description = "ID da categoria", required = true)
-            @PathVariable @NotBlank String categoryId) {
-
-        logger.info("REST request to get products by category: {}", categoryId);
-
-        List<ProductEntity> products = productService.getProductsByCategory(categoryId);
-
-        List<ProductResponse> productResponses = productMapper.toResponseList(products);
-
-        logger.debug("Successfully retrieved {} products for category: {}", products.size(), categoryId);
-        return ResponseEntity.ok(ApiResponse.success(productResponses));
-    }
-
-    @Operation(
-            summary = "Buscar produtos por marca",
-            description = "Retorna uma lista de produtos filtrados por marca"
-    )
-    @GetMapping("/brand/{brand}")
-    public ResponseEntity<ApiResponse<List<ProductResponse>>> getProductsByBrand(
-            @Parameter(description = "Nome da marca", required = true)
-            @PathVariable @NotBlank String brand) {
-
-        logger.info("REST request to get products by brand: {}", brand);
-
-        List<ProductEntity> products = productService.getProductsByBrand(brand);
-
-        List<ProductResponse> productResponses = productMapper.toResponseList(products);
-
-        logger.debug("Successfully retrieved {} products for brand: {}", products.size(), brand);
-        return ResponseEntity.ok(ApiResponse.success(productResponses));
-    }
-
-    @Operation(
-            summary = "Pesquisar produtos",
-            description = "Busca produtos por termo de pesquisa no título ou descrição"
-    )
-    @GetMapping("/search")
-    public ResponseEntity<ApiResponse<List<ProductResponse>>> searchProducts(
-            @Parameter(description = "Termo de pesquisa", required = true)
-            @RequestParam @NotBlank String q) {
-
-        logger.info("REST request to search products with term: {}", q);
-
-        List<ProductEntity> products = productService.searchProducts(q);
-
-        List<ProductResponse> productResponses = productMapper.toResponseList(products);
-
-        logger.debug("Successfully found {} products for search term: {}", products.size(), q);
-        return ResponseEntity.ok(ApiResponse.success(productResponses));
-    }
-
-    @Operation(
-            summary = "Listar produtos disponíveis",
-            description = "Retorna uma lista de produtos com estoque disponível"
-    )
-    @GetMapping("/available")
-    public ResponseEntity<ApiResponse<List<ProductResponse>>> getAvailableProducts() {
-        logger.info("REST request to get available products");
-
-        List<ProductEntity> products = productService.getAvailableProducts();
-
-        List<ProductResponse> productResponses = productMapper.toResponseList(products);
-
-        logger.debug("Successfully retrieved {} available products", products.size());
-        return ResponseEntity.ok(ApiResponse.success(productResponses));
-    }
-
-    @Operation(
-            summary = "Listar produtos com desconto",
-            description = "Retorna uma lista de produtos que possuem desconto aplicado"
-    )
-    @GetMapping("/discounted")
-    public ResponseEntity<ApiResponse<List<ProductResponse>>> getProductsWithDiscount() {
-        logger.info("REST request to get products with discount");
-
-        List<ProductEntity> products = productService.getProductsWithDiscount();
-
-        List<ProductResponse> productResponses = productMapper.toResponseList(products);
-
-        logger.debug("Successfully retrieved {} products with discount", products.size());
-        return ResponseEntity.ok(ApiResponse.success(productResponses));
-    }
-
-    @Operation(
-            summary = "Buscar produtos por faixa de preço",
-            description = "Retorna uma lista de produtos filtrados por faixa de preço"
-    )
-    @GetMapping("/price-range")
-    public ResponseEntity<ApiResponse<List<ProductResponse>>> getProductsByPriceRange(
-            @Parameter(description = "Preço mínimo", required = true)
-            @RequestParam @PositiveOrZero Double minPrice,
-            @Parameter(description = "Preço máximo", required = true)
-            @RequestParam @PositiveOrZero Double maxPrice) {
-
-        logger.info("REST request to get products by price range: {} - {}", minPrice, maxPrice);
-
-        List<ProductEntity> products = productService.getProductsByPriceRange(minPrice, maxPrice);
-
-        List<ProductResponse> productResponses = productMapper.toResponseList(products);
-
-        logger.debug("Successfully retrieved {} products in price range: {} - {}",
-                products.size(), minPrice, maxPrice);
         return ResponseEntity.ok(ApiResponse.success(productResponses));
     }
 

@@ -14,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.*;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.queryParam;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -60,7 +61,8 @@ class ProductControllerIntegrationTest {
     @DisplayName("Should filter products by category correctly")
     void shouldFilterProductsByCategoryCorrectly() throws Exception {
         // When & Then
-        mockMvc.perform(get("/api/v1/products/category/cat-electronics"))
+        mockMvc.perform(get("/api/v1/products")
+                .param("categoryId", "cat-electronics"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success", is(true)))
                 .andExpect(jsonPath("$.data", hasSize(greaterThanOrEqualTo(0))));
@@ -70,7 +72,7 @@ class ProductControllerIntegrationTest {
     @DisplayName("Should search products by term successfully")
     void shouldSearchProductsByTermSuccessfully() throws Exception {
         // When & Then
-        mockMvc.perform(get("/api/v1/products/search").param("q", "Samsung"))
+        mockMvc.perform(get("/api/v1/products").param("value", "Samsung"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success", is(true)))
                 .andExpect(jsonPath("$.data", hasSize(greaterThanOrEqualTo(0))));

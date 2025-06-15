@@ -21,14 +21,14 @@ public interface ProductUseCase {
      * @throws ProductNotFoundException se o produto não for encontrado
      * @throws IllegalArgumentException se productId for inválido
      */
-    ProductEntity getProductById(String productId);
+    ProductEntity findById(String productId);
 
     /**
      * Lista todos os produtos disponíveis.
      *
      * @return lista de todos os produtos
      */
-    List<ProductEntity> getAllProducts();
+    List<ProductEntity> findAll(String categoryId, String brandId, String value, Boolean available, Boolean discounted, Double minPrice, Double maxPrice, Boolean rangePrice);
 
     /**
      * Busca produtos por categoria.

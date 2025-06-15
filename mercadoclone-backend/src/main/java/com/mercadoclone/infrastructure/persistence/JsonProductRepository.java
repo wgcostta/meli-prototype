@@ -76,7 +76,8 @@ public class JsonProductRepository implements ProductRepository {
             try (InputStream inputStream = resource.getInputStream()) {
                 List<ProductEntity> products = objectMapper.readValue(
                         inputStream,
-                        new TypeReference<List<ProductEntity>>() {}
+                        new TypeReference<>() {
+                        }
                 );
 
                 // Processa URLs das imagens e adiciona ao cache
@@ -191,6 +192,7 @@ public class JsonProductRepository implements ProductRepository {
         ensureDataLoaded();
 
         logger.debug("Finding products with discount");
+
         return productsCache.values().stream()
                 .filter(ProductEntity::hasDiscount)
                 .collect(Collectors.toList());
