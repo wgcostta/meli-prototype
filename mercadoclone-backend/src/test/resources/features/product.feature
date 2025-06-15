@@ -120,7 +120,7 @@ Feature: BDD - Cenários de Consulta de Produtos
   Scenario: Verificar health check
     When eu faço uma requisição GET para "/actuator/health"
     Then o status da resposta deve ser 200
-    And o campo "status" deve ser "UP"
+    And o campo status deve ser UP no health check
 
   Scenario: Verificar consistência entre contagem e lista
     When eu obtenho a contagem total de produtos

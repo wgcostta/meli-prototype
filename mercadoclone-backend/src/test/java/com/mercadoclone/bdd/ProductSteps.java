@@ -33,32 +33,38 @@ public class ProductSteps extends CucumberSpringConfiguration {
     }
 
     @Given("existem produtos carregados no sistema")
-    public void existemProdutosCarregadosNoSistema() {
+    public void existemProdutosCarregadosNoSistema() throws Exception {
         ResponseEntity<String> response = restTemplate.getForEntity(getBaseUrl() + "/api/v1/products/count", String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        // Verifica se há pelo menos um produto - usando a string exata da resposta
-        String responseBody = response.getBody();
-        assertThat(responseBody).contains("\"data\"");
-        assertThat(responseBody).contains("\"success\" : true");
+
+        JsonNode json = objectMapper.readTree(response.getBody());
+        assertThat(json.has("data")).isTrue();
+        assertThat(json.has("success")).isTrue();
+        assertThat(json.get("success").asBoolean()).isTrue();
+        assertThat(json.get("data").asLong()).isGreaterThan(0);
     }
 
     @Given("que existe um produto com ID {string}")
-    public void queExisteUmProdutoComId(String productId) {
+    public void queExisteUmProdutoComId(String productId) throws Exception {
         ResponseEntity<String> response = restTemplate.getForEntity(
                 getBaseUrl() + "/api/v1/products/" + productId + "/exists", String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        // Corrigido: usar espaços como no JSON real
-        assertThat(response.getBody()).contains("\"data\" : true");
+
+        JsonNode json = objectMapper.readTree(response.getBody());
+        assertThat(json.has("data")).isTrue();
+        assertThat(json.get("data").asBoolean()).isTrue();
     }
 
     @Given("que não existe um produto com ID {string}")
-    public void queNaoExisteUmProdutoComId(String productId) {
+    public void queNaoExisteUmProdutoComId(String productId) throws Exception {
         ResponseEntity<String> response = restTemplate.getForEntity(
                 getBaseUrl() + "/api/v1/products/" + productId + "/exists", String.class);
+
         // O produto pode não existir (404) ou existir mas retornar false
         if (response.getStatusCode() == HttpStatus.OK) {
-            // Corrigido: usar espaços como no JSON real
-            assertThat(response.getBody()).contains("\"data\" : false");
+            JsonNode json = objectMapper.readTree(response.getBody());
+            assertThat(json.has("data")).isTrue();
+            assertThat(json.get("data").asBoolean()).isFalse();
         }
     }
 
@@ -144,11 +150,16 @@ public class ProductSteps extends CucumberSpringConfiguration {
     }
 
     @And("a resposta deve conter os detalhes do produto")
-    public void aRespostaDeveConterOsDetalhesDoProduto() {
+    public void aRespostaDeveConterOsDetalhesDoProduto() throws Exception {
         String body = lastResponse.getBody();
-        assertThat(body).contains("\"data\":");
-        assertThat(body).contains("\"id\":");
-        assertThat(body).contains("\"title\":");
+        JsonNode json = objectMapper.readTree(body);
+
+        assertThat(json.has("data")).isTrue();
+        JsonNode dataNode = json.get("data");
+        assertThat(dataNode.has("id")).isTrue();
+        assertThat(dataNode.has("title")).isTrue();
+        assertThat(dataNode.get("id").asText()).isNotEmpty();
+        assertThat(dataNode.get("title").asText()).isNotEmpty();
     }
 
     @And("o campo status deve ser UP no health check")
@@ -158,28 +169,46 @@ public class ProductSteps extends CucumberSpringConfiguration {
     }
 
     @And("o campo {string} deve ser {string}")
-    public void oCampoDeveSer(String field, String expectedValue) {
+    public void oCampoDeveSer(String field, String expectedValue) throws Exception {
         String body = lastResponse.getBody();
-        // Corrigido: usar espaços como no JSON real
-        if (expectedValue.equals("true") || expectedValue.equals("false")) {
-            assertThat(body).contains("\"" + field + "\" : " + expectedValue);
+        JsonNode json = objectMapper.readTree(body);
+
+        // Tratamento especial para o health check do Spring Boot Actuator
+        if (field.equals("status") && expectedValue.equals("UP")) {
+            assertThat(json.has("status")).isTrue();
+            assertThat(json.get("status").asText()).isEqualTo("UP");
+            return;
+        }
+
+        // Para campos aninhados como "data.id"
+        JsonNode fieldNode = getNestedField(json, field);
+        assertThat(fieldNode).isNotNull();
+
+        if (expectedValue.equals("true")) {
+            assertThat(fieldNode.asBoolean()).isTrue();
+        } else if (expectedValue.equals("false")) {
+            assertThat(fieldNode.asBoolean()).isFalse();
         } else {
-            assertThat(body).contains("\"" + field + "\" : \"" + expectedValue + "\"");
+            assertThat(fieldNode.asText()).isEqualTo(expectedValue);
         }
     }
 
     @And("o campo {string} deve ser true")
-    public void oCampoDeveSerTrue(String field) {
+    public void oCampoDeveSerTrue(String field) throws Exception {
         String body = lastResponse.getBody();
-        // Corrigido: usar espaços como no JSON real
-        assertThat(body).contains("\"" + field + "\" : true");
+        JsonNode json = objectMapper.readTree(body);
+        JsonNode fieldNode = getNestedField(json, field);
+        assertThat(fieldNode).isNotNull();
+        assertThat(fieldNode.asBoolean()).isTrue();
     }
 
     @And("o campo {string} deve ser false")
-    public void oCampoDeveSerFalse(String field) {
+    public void oCampoDeveSerFalse(String field) throws Exception {
         String body = lastResponse.getBody();
-        // Corrigido: usar espaços como no JSON real
-        assertThat(body).contains("\"" + field + "\" : false");
+        JsonNode json = objectMapper.readTree(body);
+        JsonNode fieldNode = getNestedField(json, field);
+        assertThat(fieldNode).isNotNull();
+        assertThat(fieldNode.asBoolean()).isFalse();
     }
 
     @And("o campo {string} deve ser um número maior que zero")
@@ -202,25 +231,30 @@ public class ProductSteps extends CucumberSpringConfiguration {
     @And("a resposta deve conter uma mensagem de erro")
     public void aRespostaDeveConterUmaMensagemDeErro() {
         String body = lastResponse.getBody();
-        assertThat(body).contains("\"message\":");
-        assertThat(body).contains("\"code\":");
+        // Corrigido: usar espaços como no JSON real de erro
+        assertThat(body).contains("\"message\" :");
+        assertThat(body).contains("\"code\" :");
     }
 
     @And("a resposta deve conter uma lista de produtos")
-    public void aRespostaDeveConterUmaListaDeProdutos() {
+    public void aRespostaDeveConterUmaListaDeProdutos() throws Exception {
         String body = lastResponse.getBody();
-        // Corrigido: usar espaços como no JSON real
-        assertThat(body).contains("\"data\" : [");
-        assertThat(body).contains("\"success\" : true");
+        JsonNode json = objectMapper.readTree(body);
+
+        assertThat(json.has("data")).isTrue();
+        assertThat(json.get("data").isArray()).isTrue();
+        assertThat(json.has("success")).isTrue();
+        assertThat(json.get("success").asBoolean()).isTrue();
     }
 
     @And("a lista {string} deve ter pelo menos {int} item")
-    public void aListaDeveTerPeloMenosItem(String listField, int minItems) {
+    public void aListaDeveTerPeloMenosItem(String listField, int minItems) throws Exception {
         String body = lastResponse.getBody();
-        // Corrigido: usar espaços como no JSON real
-        assertThat(body).contains("\"" + listField + "\" : [");
-        // Verificação básica - em um cenário real, seria melhor fazer parse do JSON
-        assertThat(body).doesNotContain("\"" + listField + "\" : [ ]");
+        JsonNode json = objectMapper.readTree(body);
+        JsonNode listNode = getNestedField(json, listField);
+
+        assertThat(listNode.isArray()).isTrue();
+        assertThat(listNode.size()).isGreaterThanOrEqualTo(minItems);
     }
 
     @And("a lista de produtos deve estar vazia")
@@ -323,10 +357,10 @@ public class ProductSteps extends CucumberSpringConfiguration {
         JsonNode current = json;
 
         for (String part : parts) {
-            current = current.get(part);
-            if (current == null) {
-                throw new IllegalArgumentException("Field not found: " + fieldPath);
+            if (current == null || !current.has(part)) {
+                throw new IllegalArgumentException("Field not found: " + fieldPath + " (missing part: " + part + ")");
             }
+            current = current.get(part);
         }
 
         return current;
