@@ -151,6 +151,12 @@ public class ProductSteps extends CucumberSpringConfiguration {
         assertThat(body).contains("\"title\":");
     }
 
+    @And("o campo status deve ser UP no health check")
+    public void oCampoStatusDeveSerUpNoHealthCheck() {
+        String body = lastResponse.getBody();
+        assertThat(body).contains("\"status\":\"UP\"");
+    }
+
     @And("o campo {string} deve ser {string}")
     public void oCampoDeveSer(String field, String expectedValue) {
         String body = lastResponse.getBody();
