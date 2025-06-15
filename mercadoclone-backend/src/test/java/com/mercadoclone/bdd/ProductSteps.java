@@ -7,8 +7,6 @@ import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.And;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -17,43 +15,37 @@ import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ProductSteps {
-
-    @LocalServerPort
-    private int port;
-
-    @Autowired
-    private TestRestTemplate restTemplate;
+public class ProductSteps extends CucumberSpringConfiguration {
 
     @Autowired
     private ObjectMapper objectMapper;
 
     private ResponseEntity<String> lastResponse;
-    private String baseUrl;
     private long requestStartTime;
     private JsonNode countData;
     private JsonNode listData;
 
     @Given("que a API está rodando")
     public void queAApiEstaRodando() {
-        baseUrl = "http://localhost:" + port;
         // Verifica se a API está respondendo
-        ResponseEntity<String> response = restTemplate.getForEntity(baseUrl + "/actuator/health", String.class);
+        ResponseEntity<String> response = restTemplate.getForEntity(getBaseUrl() + "/actuator/health", String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Given("existem produtos carregados no sistema")
     public void existemProdutosCarregadosNoSistema() {
-        ResponseEntity<String> response = restTemplate.getForEntity(baseUrl + "/api/v1/products/count", String.class);
+        ResponseEntity<String> response = restTemplate.getForEntity(getBaseUrl() + "/api/v1/products/count", String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        // Verifica se há pelo menos um produto
-        assertThat(response.getBody()).contains("\"data\":");
+        // Verifica se há pelo menos um produto - usando a string exata da resposta
+        String responseBody = response.getBody();
+        assertThat(responseBody).contains("\"data\"");
+        assertThat(responseBody).contains("\"success\" : true");
     }
 
     @Given("que existe um produto com ID {string}")
     public void queExisteUmProdutoComId(String productId) {
         ResponseEntity<String> response = restTemplate.getForEntity(
-                baseUrl + "/api/v1/products/" + productId + "/exists", String.class);
+                getBaseUrl() + "/api/v1/products/" + productId + "/exists", String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).contains("\"data\":true");
     }
@@ -61,7 +53,7 @@ public class ProductSteps {
     @Given("que não existe um produto com ID {string}")
     public void queNaoExisteUmProdutoComId(String productId) {
         ResponseEntity<String> response = restTemplate.getForEntity(
-                baseUrl + "/api/v1/products/" + productId + "/exists", String.class);
+                getBaseUrl() + "/api/v1/products/" + productId + "/exists", String.class);
         // O produto pode não existir (404) ou existir mas retornar false
         if (response.getStatusCode() == HttpStatus.OK) {
             assertThat(response.getBody()).contains("\"data\":false");
@@ -71,19 +63,19 @@ public class ProductSteps {
     @When("eu faço uma requisição GET para {string}")
     public void euFacoUmaRequisicaoGetPara(String endpoint) {
         requestStartTime = System.currentTimeMillis();
-        lastResponse = restTemplate.getForEntity(baseUrl + endpoint, String.class);
+        lastResponse = restTemplate.getForEntity(getBaseUrl() + endpoint, String.class);
     }
 
     @When("eu faço uma requisição GET para {string} com parâmetro {string} igual a {string}")
     public void euFacoUmaRequisicaoGetParaComParametro(String endpoint, String param, String value) {
-        String url = baseUrl + endpoint + "?" + param + "=" + value;
+        String url = getBaseUrl() + endpoint + "?" + param + "=" + value;
         requestStartTime = System.currentTimeMillis();
         lastResponse = restTemplate.getForEntity(url, String.class);
     }
 
     @When("eu faço uma requisição GET para {string} com parâmetros de preço min {string} e max {string}")
     public void euFacoUmaRequisicaoGetParaComParametrosDePreco(String endpoint, String minPrice, String maxPrice) {
-        String url = baseUrl + endpoint + "?rangePrice=true&minPrice=" + minPrice + "&maxPrice=" + maxPrice;
+        String url = getBaseUrl() + endpoint + "?rangePrice=true&minPrice=" + minPrice + "&maxPrice=" + maxPrice;
         requestStartTime = System.currentTimeMillis();
         lastResponse = restTemplate.getForEntity(url, String.class);
     }
@@ -91,7 +83,7 @@ public class ProductSteps {
     @When("eu faço uma requisição GET para {string} com termo de busca muito longo")
     public void euFacoUmaRequisicaoGetParaComTermoDeBuscaMuitoLongo(String endpoint) {
         String longTerm = "a".repeat(1000);
-        String url = baseUrl + endpoint + "?value=" + longTerm;
+        String url = getBaseUrl() + endpoint + "?value=" + longTerm;
         requestStartTime = System.currentTimeMillis();
         lastResponse = restTemplate.getForEntity(url, String.class);
     }
@@ -103,19 +95,19 @@ public class ProductSteps {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         requestStartTime = System.currentTimeMillis();
-        lastResponse = restTemplate.exchange(baseUrl + endpoint, HttpMethod.GET, entity, String.class);
+        lastResponse = restTemplate.exchange(getBaseUrl() + endpoint, HttpMethod.GET, entity, String.class);
     }
 
     @When("eu obtenho a contagem total de produtos")
     public void euObtenhoAContagemTotalDeProdutos() throws Exception {
-        ResponseEntity<String> countResponse = restTemplate.getForEntity(baseUrl + "/api/v1/products/count", String.class);
+        ResponseEntity<String> countResponse = restTemplate.getForEntity(getBaseUrl() + "/api/v1/products/count", String.class);
         assertThat(countResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
         countData = objectMapper.readTree(countResponse.getBody());
     }
 
     @When("eu obtenho a lista completa de produtos")
     public void euObtenhoAListaCompletaDeProdutos() throws Exception {
-        ResponseEntity<String> listResponse = restTemplate.getForEntity(baseUrl + "/api/v1/products", String.class);
+        ResponseEntity<String> listResponse = restTemplate.getForEntity(getBaseUrl() + "/api/v1/products", String.class);
         assertThat(listResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
         listData = objectMapper.readTree(listResponse.getBody());
     }
