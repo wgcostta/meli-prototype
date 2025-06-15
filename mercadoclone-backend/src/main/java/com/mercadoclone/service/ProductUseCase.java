@@ -19,10 +19,10 @@ public interface ProductUseCase {
 
     /**
      * Lists all available products.
-     *
+     * @param FilterRequest filterRequest the filter request containing criteria for filtering products
      * @return list of all products
      */
-    List<ProductEntity> findAll(FilterRequest filterRequest);
+    List<ProductEntity> findAllWithCommandPattern(FilterRequest filterRequest);
 
     /**
      * Finds products by category.

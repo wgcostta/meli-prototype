@@ -4,7 +4,7 @@ import com.mercadoclone.domain.entity.ProductEntity;
 import com.mercadoclone.domain.repository.ProductRepository;
 import com.mercadoclone.dto.request.FilterRequest;
 import com.mercadoclone.exception.ProductNotFoundException;
-import io.micrometer.common.util.StringUtils;
+import com.mercadoclone.service.command.pattern.FilterCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -44,33 +44,10 @@ public class ProductService implements ProductUseCase {
                 .orElseThrow(() -> new ProductNotFoundException("Product not found with ID: " + productId));
     }
 
-    @Override
-    public List<ProductEntity> findAll(FilterRequest filter) {
-        logger.info("Getting all products");
+    public List<ProductEntity> findAllWithCommandPattern(FilterRequest filter) {
+        FilterCommand command = FilterCommand.fromRequest(filter);
 
-        if(StringUtils.isNotBlank(filter.categoryId()))
-            return getProductsByCategory(filter.categoryId());
-
-        if(StringUtils.isNotBlank(filter.brandId()))
-            return getProductsByBrand(filter.brandId());
-
-        if(StringUtils.isNotBlank(filter.value()))
-            return searchProducts(filter.value());
-
-        if(filter.available() != null && filter.available())
-            return getAvailableProducts();
-
-        if(filter.discounted() != null && filter.discounted())
-            return getProductsWithDiscount();
-
-        if(filter.rangePrice() != null && filter.rangePrice() )
-            return getProductsByPriceRange(filter.minPrice(), filter.maxPrice());
-
-        List<ProductEntity> products = productRepository.findAll();
-
-        logger.debug("Found {} products", products.size());
-
-        return products;
+        return command.execute(this, productRepository);
     }
 
     @Override

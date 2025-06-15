@@ -86,7 +86,7 @@ class ProductControllerTest {
                 new ProductEntity("product-002", "Product 2", "Description 2")
         );
 
-        when(productService.findAll(ArgumentMatchers.any())).thenReturn(products);
+        when(productService.findAllWithCommandPattern(ArgumentMatchers.any())).thenReturn(products);
 
         // Mock the mapper to return a list of DTOs
         List<ProductResponse> responseList = productMapperInstance.toResponseList(products);
@@ -104,7 +104,7 @@ class ProductControllerTest {
     @Test
     @DisplayName("Should return 400 for invalid price range")
     void shouldReturn400ForInvalidPriceRange() throws Exception {
-        when(productService.findAll(ArgumentMatchers.any()))
+        when(productService.findAllWithCommandPattern(ArgumentMatchers.any()))
                 .thenThrow(new IllegalArgumentException("Invalid price range"));
 
         // When & Then
@@ -184,7 +184,7 @@ class ProductControllerTest {
                 new ProductEntity("product-002", "Samsung TV", "Samsung television")
         );
 
-        when(productService.findAll(ArgumentMatchers.any())).thenReturn(products);
+        when(productService.findAllWithCommandPattern(ArgumentMatchers.any())).thenReturn(products);
 
         List<ProductResponse> responseList = productMapperInstance.toResponseList(products);
         when(productMapper.toResponseList(products)).thenReturn(responseList);
@@ -208,7 +208,7 @@ class ProductControllerTest {
                 new ProductEntity("product-002", "Available Product 2", "Description 2")
         );
 
-        when(productService.findAll(ArgumentMatchers.any())).thenReturn(products);
+        when(productService.findAllWithCommandPattern(ArgumentMatchers.any())).thenReturn(products);
 
         List<ProductResponse> responseList = productMapperInstance.toResponseList(products);
         when(productMapper.toResponseList(products)).thenReturn(responseList);
@@ -232,7 +232,7 @@ class ProductControllerTest {
                 new ProductEntity("product-002", "Discounted Product 2", "Another discounted product")
         );
 
-        when(productService.findAll(ArgumentMatchers.any())).thenReturn(products);
+        when(productService.findAllWithCommandPattern(ArgumentMatchers.any())).thenReturn(products);
 
         List<ProductResponse> responseList = productMapperInstance.toResponseList(products);
         when(productMapper.toResponseList(products)).thenReturn(responseList);
@@ -251,7 +251,7 @@ class ProductControllerTest {
     @DisplayName("Should handle empty brand filter results")
     void shouldHandleEmptyBrandFilterResults() throws Exception {
         // Given
-        when(productService.findAll(ArgumentMatchers.any())).thenReturn(Arrays.asList());
+        when(productService.findAllWithCommandPattern(ArgumentMatchers.any())).thenReturn(Arrays.asList());
         when(productMapper.toResponseList(Arrays.asList())).thenReturn(Arrays.asList());
 
         // When & Then
@@ -266,7 +266,7 @@ class ProductControllerTest {
     @DisplayName("Should handle empty available products results")
     void shouldHandleEmptyAvailableProductsResults() throws Exception {
         // Given
-        when(productService.findAll(ArgumentMatchers.any())).thenReturn(Arrays.asList());
+        when(productService.findAllWithCommandPattern(ArgumentMatchers.any())).thenReturn(Arrays.asList());
         when(productMapper.toResponseList(Arrays.asList())).thenReturn(Arrays.asList());
 
         // When & Then
@@ -281,7 +281,7 @@ class ProductControllerTest {
     @DisplayName("Should handle empty discounted products results")
     void shouldHandleEmptyDiscountedProductsResults() throws Exception {
         // Given
-        when(productService.findAll(ArgumentMatchers.any())).thenReturn(Arrays.asList());
+        when(productService.findAllWithCommandPattern(ArgumentMatchers.any())).thenReturn(Arrays.asList());
         when(productMapper.toResponseList(Arrays.asList())).thenReturn(Arrays.asList());
 
         // When & Then

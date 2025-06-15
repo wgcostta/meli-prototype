@@ -97,11 +97,12 @@ public class ProductController {
     ) {
         logger.info("REST request to get all products");
 
-        List<ProductEntity> products = productService.findAll(filterRequest);
+        List<ProductEntity> products = productService.findAllWithCommandPattern(filterRequest);
 
         List<ProductResponse> productResponses = productMapper.toResponseList(products);
 
         logger.debug("Successfully retrieved {} products", products.size());
+
         return ResponseEntity.ok(ApiResponse.success(productResponses));
     }
 

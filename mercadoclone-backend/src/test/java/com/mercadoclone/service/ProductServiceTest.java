@@ -19,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Filter;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -103,7 +102,7 @@ class ProductServiceTest {
         when(productRepository.findAll()).thenReturn(expectedProducts);
 
         // When
-        List<ProductEntity> result = productService.findAll(new FilterRequest(
+        List<ProductEntity> result = productService.findAllWithCommandPattern(new FilterRequest(
                  null, null, null, null, null, null, null, null
         ));
 

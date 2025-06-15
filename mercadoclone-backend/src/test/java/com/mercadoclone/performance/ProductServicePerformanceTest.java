@@ -51,7 +51,7 @@ class ProductServicePerformanceTest {
 
         // When
         stopWatch.start();
-        List<ProductEntity> result = productService.findAll(filter);
+        List<ProductEntity> result = productService.findAllWithCommandPattern(filter);
         stopWatch.stop();
 
         // Then
