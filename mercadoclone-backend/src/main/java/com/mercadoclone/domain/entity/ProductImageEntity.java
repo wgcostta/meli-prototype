@@ -2,9 +2,6 @@ package com.mercadoclone.domain.entity;
 
 import java.util.Objects;
 
-/**
- * Entidade que representa uma imagem do produto.
- */
 public class ProductImageEntity {
     private String id;
     private String url;
@@ -20,7 +17,6 @@ public class ProductImageEntity {
         this.order = order;
     }
 
-    // Getters and Setters
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
@@ -46,5 +42,3 @@ public class ProductImageEntity {
         return Objects.hash(id);
     }
 }
-
-

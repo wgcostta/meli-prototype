@@ -1,8 +1,5 @@
 package com.mercadoclone.domain.entity;
 
-/**
- * Classe interna que representa o preço do produto.
- */
 public class PriceEntity {
     private Double current;
     private Double original;
@@ -16,7 +13,6 @@ public class PriceEntity {
         this.currency = currency;
     }
 
-    // Getters and Setters
     public Double getCurrent() {
         return current;
     }

@@ -8,16 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-/**
- * Entidade que representa um produto no sistema.
- *
- * Esta classe segue os princípios de Clean Code:
- * - Nomes descritivos e significativos
- * - Encapsulamento adequado
- * - Responsabilidade única
- *
- * @author MercadoClone Team
- */
 public class ProductEntity {
 
     private String id;
@@ -52,7 +42,6 @@ public class ProductEntity {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private LocalDateTime updatedAt;
 
-    // Constructors
     public ProductEntity() {}
 
     public ProductEntity(String id, String title, String description) {
@@ -63,7 +52,6 @@ public class ProductEntity {
         this.updatedAt = LocalDateTime.now();
     }
 
-    // Getters and Setters
     public String getId() {
         return id;
     }
@@ -216,20 +204,10 @@ public class ProductEntity {
         this.updatedAt = updatedAt;
     }
 
-    /**
-     * Verifica se o produto está disponível em estoque.
-     *
-     * @return true se o produto estiver disponível, false caso contrário
-     */
     public boolean isAvailable() {
         return stock != null && stock.isAvailable();
     }
 
-    /**
-     * Verifica se o produto tem desconto aplicado.
-     *
-     * @return true se houver desconto, false caso contrário
-     */
     public boolean hasDiscount() {
         return price != null && price.getDiscount() != null && price.getDiscount() > 0;
     }

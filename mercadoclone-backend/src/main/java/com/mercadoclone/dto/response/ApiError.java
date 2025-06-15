@@ -1,6 +1,3 @@
-/**
- * DTO para erros da API.
- */
 package com.mercadoclone.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;

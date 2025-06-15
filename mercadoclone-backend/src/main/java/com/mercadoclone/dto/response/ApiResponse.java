@@ -4,11 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.LocalDateTime;
 
-/**
- * DTO para respostas padronizadas da API.
- *
- * @param <T> tipo dos dados retornados
- */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiResponse<T> {
 
@@ -35,27 +30,28 @@ public class ApiResponse<T> {
     }
 
     /**
-     * Cria uma resposta de sucesso.
+     * Creates a success response.
      */
     public static <T> ApiResponse<T> success(T data) {
         return new ApiResponse<>(true, data);
     }
 
     /**
-     * Cria uma resposta de sucesso com mensagem.
+     * Creates a success response with message.
      */
     public static <T> ApiResponse<T> success(T data, String message) {
         return new ApiResponse<>(true, data, message);
     }
 
     /**
-     * Cria uma resposta de erro.
+     * Creates an error response.
      */
     public static <T> ApiResponse<T> error(String message) {
         return new ApiResponse<>(false, null, message);
     }
 
     // Getters and Setters
+
     public boolean isSuccess() { return success; }
     public void setSuccess(boolean success) { this.success = success; }
 
@@ -68,5 +64,3 @@ public class ApiResponse<T> {
     public LocalDateTime getTimestamp() { return timestamp; }
     public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
 }
-
-

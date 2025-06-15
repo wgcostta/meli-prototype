@@ -4,11 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
-public
-/**
- * Entidade que representa um vendedor.
- */
-class SellerEntity {
+public class SellerEntity {
     private String id;
     private String name;
     private Double reputation;
@@ -33,7 +29,6 @@ class SellerEntity {
         this.location = location;
     }
 
-    // Getters and Setters
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
@@ -58,9 +53,6 @@ class SellerEntity {
     public String getAvatar() { return avatar; }
     public void setAvatar(String avatar) { this.avatar = avatar; }
 
-    /**
-     * Verifica se o vendedor é confiável (vendedor oficial ou com boa reputação).
-     */
     public boolean isTrusted() {
         return Boolean.TRUE.equals(isOfficial) ||
                 (reputation != null && reputation >= 4.5);

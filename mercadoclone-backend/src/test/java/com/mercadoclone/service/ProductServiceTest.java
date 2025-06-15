@@ -6,6 +6,7 @@ package com.mercadoclone.service;
 import com.mercadoclone.domain.entity.CategoryEntity;
 import com.mercadoclone.domain.entity.ProductEntity;
 import com.mercadoclone.domain.repository.ProductRepository;
+import com.mercadoclone.dto.request.FilterRequest;
 import com.mercadoclone.exception.ProductNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -48,7 +49,7 @@ class ProductServiceTest {
         when(productRepository.findById(productId)).thenReturn(Optional.of(sampleProduct));
 
         // When
-        ProductEntity result = productService.getProductById(productId);
+        ProductEntity result = productService.findById(productId);
 
         // Then
         assertThat(result).isNotNull();
@@ -64,7 +65,7 @@ class ProductServiceTest {
         when(productRepository.findById(productId)).thenReturn(Optional.empty());
 
         // When & Then
-        assertThatThrownBy(() -> productService.getProductById(productId))
+        assertThatThrownBy(() -> productService.findById(productId))
                 .isInstanceOf(ProductNotFoundException.class)
                 .hasMessageContaining("Product not found with ID: " + productId);
 
@@ -75,7 +76,7 @@ class ProductServiceTest {
     @DisplayName("Should throw IllegalArgumentException for null product ID")
     void shouldThrowExceptionForNullProductId() {
         // When & Then
-        assertThatThrownBy(() -> productService.getProductById(null))
+        assertThatThrownBy(() -> productService.findById(null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Product ID cannot be null or blank");
 
@@ -86,7 +87,7 @@ class ProductServiceTest {
     @DisplayName("Should throw IllegalArgumentException for blank product ID")
     void shouldThrowExceptionForBlankProductId() {
         // When & Then
-        assertThatThrownBy(() -> productService.getProductById("   "))
+        assertThatThrownBy(() -> productService.findById("   "))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Product ID cannot be null or blank");
 
@@ -101,7 +102,9 @@ class ProductServiceTest {
         when(productRepository.findAll()).thenReturn(expectedProducts);
 
         // When
-        List<ProductEntity> result = productService.getAllProducts();
+        List<ProductEntity> result = productService.findAllWithCommandPattern(new FilterRequest(
+                 null, null, null, null, null, null, null, null
+        ));
 
         // Then
         assertThat(result).hasSize(2);

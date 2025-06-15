@@ -1,11 +1,7 @@
 package com.mercadoclone.domain.entity;
 
-
 import java.util.Map;
 
-/**
- * Entidade que representa as avaliações do produto.
- */
 public class ProductRatingEntity {
     private Double average;
     private Integer count;
@@ -19,7 +15,6 @@ public class ProductRatingEntity {
         this.distribution = distribution;
     }
 
-    // Getters and Setters
     public Double getAverage() { return average; }
     public void setAverage(Double average) { this.average = average; }
 
@@ -29,9 +24,6 @@ public class ProductRatingEntity {
     public Map<String, Integer> getDistribution() { return distribution; }
     public void setDistribution(Map<String, Integer> distribution) { this.distribution = distribution; }
 
-    /**
-     * Verifica se o produto tem uma boa avaliação (>= 4.0).
-     */
     public boolean hasGoodRating() {
         return average != null && average >= 4.0;
     }

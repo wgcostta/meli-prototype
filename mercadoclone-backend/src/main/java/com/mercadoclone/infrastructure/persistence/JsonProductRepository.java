@@ -24,14 +24,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
- * Implementação do repositório de produtos que carrega dados de um arquivo JSON.
+ * Product repository implementation that loads data from a JSON file.
  *
- * Esta implementação segue os princípios SOLID:
- * - SRP: Responsável apenas pela persistência de produtos
- * - OCP: Pode ser estendida sem modificação
- * - LSP: Substitui perfeitamente a interface ProductRepository
- * - ISP: Implementa apenas a interface necessária
- * - DIP: Depende de abstrações (ProductRepository, ObjectMapper)
+ * This implementation follows SOLID principles:
+ * - SRP: Responsible only for product persistence
+ * - OCP: Can be extended without modification
+ * - LSP: Perfectly substitutes the ProductRepository interface
+ * - ISP: Implements only the necessary interface
+ * - DIP: Depends on abstractions (ProductRepository, ObjectMapper)
  *
  * @author MercadoClone Team
  */
@@ -45,7 +45,7 @@ public class JsonProductRepository implements ProductRepository {
     private final String productsFilePath;
     private final String imagesBaseUrl;
 
-    // Cache em memória para melhor performance
+    // In-memory cache for better performance
     private final Map<String, ProductEntity> productsCache = new ConcurrentHashMap<>();
     private volatile boolean dataLoaded = false;
 
@@ -61,7 +61,7 @@ public class JsonProductRepository implements ProductRepository {
     }
 
     /**
-     * Carrega os dados do arquivo JSON após a construção do bean.
+     * Loads data from JSON file after bean construction.
      */
     @PostConstruct
     public void loadData() {
@@ -76,10 +76,11 @@ public class JsonProductRepository implements ProductRepository {
             try (InputStream inputStream = resource.getInputStream()) {
                 List<ProductEntity> products = objectMapper.readValue(
                         inputStream,
-                        new TypeReference<List<ProductEntity>>() {}
+                        new TypeReference<>() {
+                        }
                 );
 
-                // Processa URLs das imagens e adiciona ao cache
+                // Process image URLs and add to cache
                 products.forEach(this::processProductImages);
                 products.forEach(product -> productsCache.put(product.getId(), product));
 
@@ -94,7 +95,7 @@ public class JsonProductRepository implements ProductRepository {
     }
 
     /**
-     * Processa as URLs das imagens dos produtos, adicionando a URL base.
+     * Processes product image URLs, adding the base URL.
      */
     private void processProductImages(ProductEntity product) {
         if (product.getImages() != null) {
@@ -191,6 +192,7 @@ public class JsonProductRepository implements ProductRepository {
         ensureDataLoaded();
 
         logger.debug("Finding products with discount");
+
         return productsCache.values().stream()
                 .filter(ProductEntity::hasDiscount)
                 .collect(Collectors.toList());
@@ -213,7 +215,7 @@ public class JsonProductRepository implements ProductRepository {
     }
 
     /**
-     * Verifica se um produto contém o termo de busca no título ou descrição.
+     * Checks if a product contains the search term in title or description.
      */
     private boolean containsSearchTerm(ProductEntity product, String searchTerm) {
         return (product.getTitle() != null &&
@@ -225,7 +227,7 @@ public class JsonProductRepository implements ProductRepository {
     }
 
     /**
-     * Valida se os dados foram carregados.
+     * Validates if data has been loaded.
      */
     private void ensureDataLoaded() {
         if (!dataLoaded) {
@@ -234,14 +236,14 @@ public class JsonProductRepository implements ProductRepository {
     }
 
     /**
-     * Valida o ID do produto.
+     * Validates the product ID.
      */
     private void validateProductId(String productId) {
         validateNonBlankString(productId, "Product ID");
     }
 
     /**
-     * Valida se a string não é nula ou vazia.
+     * Validates if the string is not null or empty.
      */
     private void validateNonBlankString(String value, String fieldName) {
         if (!StringUtils.hasText(value)) {
@@ -250,7 +252,7 @@ public class JsonProductRepository implements ProductRepository {
     }
 
     /**
-     * Valida a faixa de preços.
+     * Validates the price range.
      */
     private void validatePriceRange(Double minPrice, Double maxPrice) {
         if (minPrice == null || maxPrice == null) {
@@ -265,7 +267,7 @@ public class JsonProductRepository implements ProductRepository {
     }
 
     /**
-     * Recarrega os dados do arquivo (útil para testes ou atualização manual).
+     * Reloads data from file (useful for testing or manual updates).
      */
     public void reloadData() {
         logger.info("Reloading products data");
@@ -275,7 +277,7 @@ public class JsonProductRepository implements ProductRepository {
     }
 
     /**
-     * Retorna o número de produtos em cache.
+     * Returns the number of products in cache.
      */
     public int getCacheSize() {
         return productsCache.size();
