@@ -181,12 +181,6 @@
 							<artifactId>mapstruct-processor</artifactId>
 							<version>${mapstruct.version}</version>
 						</path>
-						<!-- Binding MapStruct -->
-						<path>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok-mapstruct-binding</artifactId>
-							<version>0.2.0</version>
-						</path>
 					</annotationProcessorPaths>
 					<compilerArgs>
 						<compilerArg>
@@ -215,6 +209,8 @@
 						<exclude>**/*IntegrationTest.java</exclude>
 						<exclude>**/CucumberTestRunner.java</exclude>
 					</excludes>
+					<!-- Configuração para JaCoCo -->
+					<argLine>${surefireArgLine}</argLine>
 				</configuration>
 			</plugin>
 
@@ -228,6 +224,8 @@
 						<include>**/*IntegrationTest.java</include>
 						<include>**/CucumberTestRunner.java</include>
 					</includes>
+					<!-- Configuração para JaCoCo -->
+					<argLine>${failsafeArgLine}</argLine>
 				</configuration>
 				<executions>
 					<execution>
@@ -247,24 +245,121 @@
 				<configuration>
 					<excludes>
 						<exclude>**/MeliCloneApplication.class</exclude>
-
 						<exclude>**/config/**</exclude>
 						<exclude>**/exception/**</exclude>
-
 					</excludes>
 				</configuration>
 				<executions>
+					<!-- Preparar agente para testes unitários -->
 					<execution>
+						<id>prepare-agent</id>
 						<goals>
 							<goal>prepare-agent</goal>
 						</goals>
+						<configuration>
+							<destFile>${project.build.directory}/jacoco-unit.exec</destFile>
+							<propertyName>surefireArgLine</propertyName>
+						</configuration>
 					</execution>
+
+					<!-- Preparar agente para testes de integração -->
 					<execution>
-						<id>report</id>
+						<id>prepare-agent-integration</id>
+						<goals>
+							<goal>prepare-agent-integration</goal>
+						</goals>
+						<configuration>
+							<destFile>${project.build.directory}/jacoco-integration.exec</destFile>
+							<propertyName>failsafeArgLine</propertyName>
+						</configuration>
+					</execution>
+
+					<!-- Relatório de cobertura dos testes unitários -->
+					<execution>
+						<id>jacoco-site</id>
 						<phase>test</phase>
 						<goals>
 							<goal>report</goal>
 						</goals>
+						<configuration>
+							<dataFile>${project.build.directory}/jacoco-unit.exec</dataFile>
+							<outputDirectory>${project.reporting.outputDirectory}/jacoco-unit</outputDirectory>
+						</configuration>
+					</execution>
+
+					<!-- Relatório de cobertura dos testes de integração -->
+					<execution>
+						<id>jacoco-integration</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>report-integration</goal>
+						</goals>
+						<configuration>
+							<dataFile>${project.build.directory}/jacoco-integration.exec</dataFile>
+							<outputDirectory>${project.reporting.outputDirectory}/jacoco-integration</outputDirectory>
+						</configuration>
+					</execution>
+
+					<!-- Merge dos arquivos de cobertura e relatório consolidado -->
+					<execution>
+						<id>merge-results</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>merge</goal>
+						</goals>
+						<configuration>
+							<fileSets>
+								<fileSet>
+									<directory>${project.build.directory}</directory>
+									<includes>
+										<include>*.exec</include>
+									</includes>
+								</fileSet>
+							</fileSets>
+							<destFile>${project.build.directory}/jacoco-merged.exec</destFile>
+						</configuration>
+					</execution>
+
+					<!-- Relatório consolidado (unitários + integração) -->
+					<execution>
+						<id>post-merge-report</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<dataFile>${project.build.directory}/jacoco-merged.exec</dataFile>
+							<outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
+						</configuration>
+					</execution>
+
+					<!-- Verificação de cobertura mínima (opcional) -->
+					<execution>
+						<id>check</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<dataFile>${project.build.directory}/jacoco-merged.exec</dataFile>
+							<rules>
+								<rule>
+									<element>BUNDLE</element>
+									<limits>
+										<limit>
+											<counter>LINE</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>0.80</minimum>
+										</limit>
+										<limit>
+											<counter>BRANCH</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>0.70</minimum>
+										</limit>
+									</limits>
+								</rule>
+							</rules>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
