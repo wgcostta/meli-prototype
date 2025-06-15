@@ -113,7 +113,15 @@ class ProductControllerTest {
     @Test
     @DisplayName("Should return 400 for invalid price range")
     void shouldReturn400ForInvalidPriceRange() throws Exception {
-        when(productService.getProductsByPriceRange(200.0, 100.0))
+        when(productService.findAll(ArgumentMatchers.any(),
+                ArgumentMatchers.any(),
+                ArgumentMatchers.any(),
+                ArgumentMatchers.any(),
+                ArgumentMatchers.any(),
+                ArgumentMatchers.any(),
+                ArgumentMatchers.any(),
+                ArgumentMatchers.any()
+               ))
                 .thenThrow(new IllegalArgumentException("Invalid price range"));
 
         // When & Then

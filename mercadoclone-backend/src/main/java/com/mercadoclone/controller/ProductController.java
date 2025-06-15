@@ -94,21 +94,21 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<ApiResponse<List<ProductResponse>>> findAll(
             @Parameter(description = "category id")
-            @RequestParam String categoryId,
+            @RequestParam(required = false) String categoryId,
             @Parameter(description = "brand id")
-            @RequestParam String brandId,
+            @RequestParam(required = false) String brandId,
             @Parameter(description = "Value from search")
-            @RequestParam String value,
+            @RequestParam(required = false) String value,
             @Parameter(description = "Available products")
-            @RequestParam Boolean available,
+            @RequestParam (required = false) Boolean available,
             @Parameter(description = "Discounted products")
-            @RequestParam Boolean discounted,
+            @RequestParam(required = false) Boolean discounted,
             @Parameter(description = "Range price")
-            @RequestParam Boolean rangePrice,
+            @RequestParam(required = false) Boolean rangePrice,
             @Parameter(description = "Minimum price")
-            @RequestParam(defaultValue = "0") Double minPrice,
+            @RequestParam(defaultValue = "0", required = false) Double minPrice,
             @Parameter(description = "Maximum price")
-            @RequestParam(defaultValue = "0") Double maxPrice
+            @RequestParam(defaultValue = "0", required = false) Double maxPrice
     ) {
         logger.info("REST request to get all products");
 
