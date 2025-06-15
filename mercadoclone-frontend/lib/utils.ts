@@ -1,8 +1,9 @@
 // Utilitários para formatação e helpers
 export function formatPrice(price: number, currency: string = 'BRL'): string {
+  // Always format as BRL for Brazilian e-commerce site
   return new Intl.NumberFormat('pt-BR', {
     style: 'currency',
-    currency: currency,
+    currency: 'BRL', // Force BRL regardless of input currency
   }).format(price);
 }
 

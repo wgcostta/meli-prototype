@@ -10,7 +10,10 @@ export function ProductGallerySkeleton() {
       <div className="bg-white rounded-lg p-6 shadow-sm">
         {/* Imagem principal skeleton */}
         <div className="relative mb-4">
-          <div className="w-full h-96 bg-gray-200 rounded-lg animate-pulse" />
+          <div 
+            className="w-full h-96 bg-gray-200 rounded-lg animate-pulse" 
+            data-testid="main-image-skeleton"
+          />
         </div>
 
         {/* Miniaturas skeleton */}
@@ -19,6 +22,7 @@ export function ProductGallerySkeleton() {
             <div
               key={index}
               className="w-16 h-16 bg-gray-200 rounded border animate-pulse"
+              data-testid={`thumbnail-skeleton-${index}`}
             />
           ))}
         </div>
@@ -91,9 +95,15 @@ export function ErrorState({ error, onRetry, retryCount, isRetrying }: ErrorStat
       <div className="max-w-md w-full bg-white rounded-lg shadow-sm p-8 text-center">
         <div className="mb-6">
           {isConnectionError ? (
-            <WifiOff className="mx-auto h-16 w-16 text-red-500" />
+            <WifiOff 
+              className="mx-auto h-16 w-16 text-red-500" 
+              data-testid="wifi-off-icon"
+            />
           ) : (
-            <AlertCircle className="mx-auto h-16 w-16 text-yellow-500" />
+            <AlertCircle 
+              className="mx-auto h-16 w-16 text-yellow-500"
+              data-testid="alert-circle-icon"
+            />
           )}
         </div>
 
@@ -122,7 +132,10 @@ export function ErrorState({ error, onRetry, retryCount, isRetrying }: ErrorStat
               : 'bg-blue-500 text-white hover:bg-blue-600'
           }`}
         >
-          <RefreshCw className={`h-5 w-5 ${isRetrying ? 'animate-spin' : ''}`} />
+          <RefreshCw 
+            className={`h-5 w-5 ${isRetrying ? 'animate-spin' : ''}`}
+            data-testid="refresh-icon"
+          />
           <span>
             {isRetrying ? 'Tentando novamente...' : 'Tentar novamente'}
           </span>
@@ -147,7 +160,10 @@ export function RetryLoadingState({ message, retryCount }: { message: string; re
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
       <div className="max-w-md w-full bg-white rounded-lg shadow-sm p-8 text-center">
         <div className="mb-6">
-          <Wifi className="mx-auto h-16 w-16 text-blue-500 animate-pulse" />
+          <Wifi 
+            className="mx-auto h-16 w-16 text-blue-500 animate-pulse" 
+            data-testid="wifi-icon"
+          />
         </div>
 
         <h2 className="text-xl font-semibold text-gray-900 mb-4">
@@ -160,7 +176,10 @@ export function RetryLoadingState({ message, retryCount }: { message: string; re
 
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
           <div className="flex items-center justify-center space-x-2">
-            <RefreshCw className="h-5 w-5 text-blue-600 animate-spin" />
+            <RefreshCw 
+              className="h-5 w-5 text-blue-600 animate-spin" 
+              data-testid="refresh-icon"
+            />
             <span className="text-sm text-blue-800">
               Tentativa {retryCount} de 3
             </span>
@@ -183,11 +202,12 @@ export function ReconnectionNotice({ onDismiss }: { onDismiss: () => void }) {
   return (
     <div className="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in">
       <div className="flex items-center space-x-2">
-        <Wifi className="h-5 w-5" />
+        <Wifi className="h-5 w-5" data-testid="wifi-icon" />
         <span>Conectado! Carregando dados...</span>
         <button 
           onClick={onDismiss}
           className="ml-2 text-green-200 hover:text-white"
+          aria-label="Dismiss notification"
         >
           ×
         </button>

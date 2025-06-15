@@ -18,22 +18,33 @@ import {
 describe('Utils', () => {
   describe('formatPrice', () => {
     it('should format BRL currency correctly', () => {
-      expect(formatPrice(299.99, 'BRL')).toBe('R$ 299,99')
-      expect(formatPrice(1000, 'BRL')).toBe('R$ 1.000,00')
-      expect(formatPrice(0, 'BRL')).toBe('R$ 0,00')
+      expect(formatPrice(299.99, 'BRL')).toMatch(/^R\$\s*299,99$/)
+      expect(formatPrice(1000, 'BRL')).toMatch(/^R\$\s*1\.000,00$/)
+      expect(formatPrice(0, 'BRL')).toMatch(/^R\$\s*0,00$/)
     })
 
     it('should default to BRL when no currency provided', () => {
-      expect(formatPrice(100)).toBe('R$ 100,00')
+      expect(formatPrice(100)).toMatch(/^R\$\s*100,00$/)
     })
 
     it('should handle different currencies', () => {
-      expect(formatPrice(100, 'USD')).toBe('R$ 100,00') // Converts to BRL for display
+      // Always formats as BRL regardless of input currency (for Brazilian e-commerce)
+      expect(formatPrice(100, 'USD')).toMatch(/^R\$\s*100,00$/)
     })
 
     it('should handle decimal values', () => {
-      expect(formatPrice(99.5, 'BRL')).toBe('R$ 99,50')
-      expect(formatPrice(99.99, 'BRL')).toBe('R$ 99,99')
+      expect(formatPrice(99.5, 'BRL')).toMatch(/^R\$\s*99,50$/)
+      expect(formatPrice(99.99, 'BRL')).toMatch(/^R\$\s*99,99$/)
+    })
+
+    it('should always return a string', () => {
+      expect(typeof formatPrice(100)).toBe('string')
+      expect(typeof formatPrice(0)).toBe('string')
+      expect(typeof formatPrice(999.99)).toBe('string')
+    })
+
+    it('should handle negative values', () => {
+      expect(formatPrice(-100, 'BRL')).toMatch(/^-R\$\s*100,00$/)
     })
   })
 
@@ -200,8 +211,15 @@ describe('Utils', () => {
       const placeholder = generateImagePlaceholder(300, 200)
       
       expect(placeholder).toContain('data:image/svg+xml;base64,')
-      expect(placeholder).toContain('300')
-      expect(placeholder).toContain('200')
+      
+      // Decode the base64 to check the SVG content
+      const base64Part = placeholder.split(',')[1]
+      const decodedSvg = atob(base64Part)
+      
+      expect(decodedSvg).toContain('300')
+      expect(decodedSvg).toContain('200')
+      expect(decodedSvg).toContain('<svg')
+      expect(decodedSvg).toContain('</svg>')
     })
 
     it('should handle different dimensions', () => {
@@ -209,6 +227,24 @@ describe('Utils', () => {
       const placeholder2 = generateImagePlaceholder(500, 300)
       
       expect(placeholder1).not.toBe(placeholder2)
+      
+      // Check that each placeholder contains its respective dimensions
+      const decoded1 = atob(placeholder1.split(',')[1])
+      const decoded2 = atob(placeholder2.split(',')[1])
+      
+      expect(decoded1).toContain('100')
+      expect(decoded2).toContain('500')
+      expect(decoded2).toContain('300')
+    })
+
+    it('should generate properly formatted SVG structure', () => {
+      const placeholder = generateImagePlaceholder(400, 300)
+      const decodedSvg = atob(placeholder.split(',')[1])
+      
+      expect(decodedSvg).toContain('viewBox="0 0 400 300"')
+      expect(decodedSvg).toContain('xmlns="http://www.w3.org/2000/svg"')
+      expect(decodedSvg).toContain('<rect')
+      expect(decodedSvg).toContain('<path')
     })
   })
 

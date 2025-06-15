@@ -13,7 +13,7 @@ This guide explains how to run the complete application using Docker or individu
 ### Run the entire application
 ```bash
 # Start all services
-docker-compose up -d
+docker-compose up
 
 # View real-time logs
 docker-compose logs -f

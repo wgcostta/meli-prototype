@@ -4,9 +4,9 @@ A full-stack application that replicates MercadoLibre's product detail page, bui
 
 ## 🌐 Live Demo
 
-- **Frontend Application**: [https://your-frontend-url.vercel.app](https://your-frontend-url.vercel.app)
-- **Backend API**: [https://your-backend-url.herokuapp.com](https://your-backend-url.herokuapp.com)
-- **API Documentation**: [https://your-backend-url.herokuapp.com/swagger-ui.html](https://your-backend-url.herokuapp.com/swagger-ui.html)
+- **Frontend Application**: [https://meli-prototype-git-main-wagner-oliveira-da-costas-projects.vercel.app](https://your-frontend-url.vercel.app)
+- **Backend API**: [https://meli-backend-33b27898349d.herokuapp.com](https://your-backend-url.herokuapp.com)
+- **API Documentation**: [https://meli-backend-33b27898349d.herokuapp.com/swagger-ui/index.html#](https://your-backend-url.herokuapp.com/swagger-ui.html)
 
 ## 🏗️ Project Structure
 
@@ -69,23 +69,23 @@ mvn spring-boot:run
 
 ### 3. Verify Backend is Running
 
-The backend will start on `http://localhost:8080`
+The backend will start on `http://localhost:3001`
 
 **Test the API:**
 ```bash
-curl http://localhost:8080/api/products/1
+curl http://localhost:3001/api/v1/products/1
 ```
 
 **Health Check:**
 ```bash
-curl http://localhost:8080/actuator/health
+curl http://localhost:3001/actuator/health
 ```
 
 ### Backend Configuration
 
 The application uses the following default configuration:
 
-- **Port**: 8080
+- **Port**: 3001
 - **Data Storage**: Local JSON files in `src/main/resources/data/`
 - **CORS**: Configured to allow frontend on port 3000
 - **Logging**: INFO level, file logging enabled
@@ -95,7 +95,7 @@ The application uses the following default configuration:
 ### 1. Navigate to Frontend Directory
 
 ```bash
-cd frontend
+cd mercadoclone-frontend
 ```
 
 ### 2. Install Dependencies
@@ -112,7 +112,7 @@ Create a `.env.local` file in the frontend directory:
 
 ```bash
 # API Configuration
-NEXT_PUBLIC_API_BASE_URL=http://localhost:8080/api
+NEXT_PUBLIC_API_BASE_URL=http://localhost:3001/api
 NEXT_PUBLIC_APP_NAME=MercadoLibre Challenge
 
 # Optional: Analytics or other services
@@ -147,7 +147,7 @@ npm run lint         # Run ESLint
 ### Backend Tests
 
 ```bash
-cd backend
+cd mercadoclone-backend
 
 # Run all tests
 mvn test
@@ -180,8 +180,8 @@ npm run test:coverage
 
 After running tests with coverage:
 
-- **Backend**: `backend/target/site/jacoco/index.html`
-- **Frontend**: `frontend/coverage/lcov-report/index.html`
+- **Backend**: `mercadoclone-backend/target/site/jacoco/index.html`
+- **Frontend**: `mercadoclone-frontend/coverage/lcov-report/index.html`
 
 ## 🛠️ API Endpoints
 
@@ -189,11 +189,8 @@ After running tests with coverage:
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/products` | List all products |
-| GET | `/api/products/{id}` | Get product by ID |
-| POST | `/api/products` | Create new product |
-| PUT | `/api/products/{id}` | Update product |
-| DELETE | `/api/products/{id}` | Delete product |
+| GET | `/api/v1/products` | List all products |
+| GET | `/api/v1/products/{id}` | Get product by ID |
 
 ### Example API Response
 
@@ -314,7 +311,7 @@ Sample product data is stored in `backend/src/main/resources/data/products.json`
 
 **Backend not starting:**
 - Verify Java 11+ is installed: `java -version`
-- Check port 8080 is available: `lsof -i :8080`
+- Check port 3001 is available: `lsof -i :3001`
 
 **Frontend build errors:**
 - Clear npm cache: `npm cache clean --force`
@@ -341,7 +338,7 @@ For questions or issues regarding this implementation, please refer to the techn
 
 ---
 
-**Author**: Your Name  
-**Email**: your.email@example.com  
+**Author**: Wagner Oliveira da Costa
+**Email**: wg.o.costa@gmail.com  
 **Date**: June 2025  
 **Challenge**: MercadoLibre Technical Assessment
